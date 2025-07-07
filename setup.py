@@ -9,8 +9,8 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 setup(
     name="school-of-prompt",
     version="0.2.0",
-    author="School of Prompt Team",
-    author_email="",
+    author="Gustavo Pereyra",
+    author_email="gpereyra@users.noreply.github.com",
     description="🎸 Rock your prompts! Simple, powerful prompt optimization with minimal boilerplate",
     long_description=long_description,
     long_description_content_type="text/markdown",
