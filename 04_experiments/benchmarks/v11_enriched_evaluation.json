@@ -1,0 +1,54 @@
+{
+  "variant": "v11_enriched",
+  "total_samples": 5,
+  "valid_responses": 2,
+  "average_mae": 2.5,
+  "accuracy": 0.0,
+  "results": [
+    {
+      "prompt": "ENHANCED YOUTUBE CHANNEL ANALYSIS: MrBeast\n\nCONTENT INTELLIGENCE:\n- Detected Categories: Unknown\n- Maturity Score: 0/10\n- Safety Flags: Kid-Safe: False, Age-Restricted: False, Adult Content: False\n\nCHANNEL DATA:\n- Description: Channel: MrBeast\n- Topics: Unknown\n- Recent Videos: No video data available\n\nSMART RECOMMENDATION:\nBased on automated content analysis and safety flags, determine the minimum appropriate age (0-18).",
+      "response": "We are unable to determine an appropriate age for this channel as there is not enough information available.",
+      "expected_age": 13,
+      "predicted_age": null,
+      "mae": 999,
+      "exact_match": 0,
+      "valid_response": false
+    },
+    {
+      "prompt": "ENHANCED YOUTUBE CHANNEL ANALYSIS: Cocomelon - Nursery Rhymes\n\nCONTENT INTELLIGENCE:\n- Detected Categories: Unknown\n- Maturity Score: 0/10\n- Safety Flags: Kid-Safe: False, Age-Restricted: False, Adult Content: False\n\nCHANNEL DATA:\n- Description: Channel: Cocomelon - Nursery Rhymes\n- Topics: Unknown\n- Recent Videos: No video data available\n\nSMART RECOMMENDATION:\nBased on automated content analysis and safety flags, determine the minimum appropriate age (0-18).",
+      "response": "The minimum appropriate age for this channel would be 0, as it is specifically geared towards young children, being a nursery rhymes channel. However, parental guidance is always recommended for children using the internet.",
+      "expected_age": 3,
+      "predicted_age": 0,
+      "mae": 3,
+      "exact_match": 0,
+      "valid_response": true
+    },
+    {
+      "prompt": "ENHANCED YOUTUBE CHANNEL ANALYSIS: PewDiePie\n\nCONTENT INTELLIGENCE:\n- Detected Categories: Unknown\n- Maturity Score: 0/10\n- Safety Flags: Kid-Safe: False, Age-Restricted: False, Adult Content: False\n\nCHANNEL DATA:\n- Description: Channel: PewDiePie\n- Topics: Unknown\n- Recent Videos: No video data available\n\nSMART RECOMMENDATION:\nBased on automated content analysis and safety flags, determine the minimum appropriate age (0-18).",
+      "response": "Based on the data available, it is recommended that children under the age of 18 should not watch this channel. The Maturity Score of 0/10 and lack of detected categories indicate that the content may not be suitable for minors and the safety flags also point towards potentially inappropriate content. It is always important for parents to review and monitor the content their children watch on YouTube.",
+      "expected_age": 16,
+      "predicted_age": 18,
+      "mae": 2,
+      "exact_match": 0,
+      "valid_response": true
+    },
+    {
+      "prompt": "ENHANCED YOUTUBE CHANNEL ANALYSIS: Blippi - Educational Videos for Kids\n\nCONTENT INTELLIGENCE:\n- Detected Categories: Unknown\n- Maturity Score: 0/10\n- Safety Flags: Kid-Safe: False, Age-Restricted: False, Adult Content: False\n\nCHANNEL DATA:\n- Description: Channel: Blippi - Educational Videos for Kids\n- Topics: Unknown\n- Recent Videos: No video data available\n\nSMART RECOMMENDATION:\nBased on automated content analysis and safety flags, determine the minimum appropriate age (0-18).",
+      "response": "Based on the maturity score, this channel is not recommended for any age group. Also, since there is no recent video data available, it is difficult to determine the current content and topics being covered. Parents should review the channel and its videos before allowing their children to watch.",
+      "expected_age": 2,
+      "predicted_age": null,
+      "mae": 999,
+      "exact_match": 0,
+      "valid_response": false
+    },
+    {
+      "prompt": "ENHANCED YOUTUBE CHANNEL ANALYSIS: T-Series\n\nCONTENT INTELLIGENCE:\n- Detected Categories: Unknown\n- Maturity Score: 0/10\n- Safety Flags: Kid-Safe: False, Age-Restricted: False, Adult Content: False\n\nCHANNEL DATA:\n- Description: Channel: T-Series\n- Topics: Unknown\n- Recent Videos: No video data available\n\nSMART RECOMMENDATION:\nBased on automated content analysis and safety flags, determine the minimum appropriate age (0-18).",
+      "response": "Based on the lack of clear categories and recent videos, as well as the low maturity score and lack of safety flags, it is not recommended for any age. Further manual review is necessary for an accurate recommendation.",
+      "expected_age": 10,
+      "predicted_age": null,
+      "mae": 999,
+      "exact_match": 0,
+      "valid_response": false
+    }
+  ]
+}

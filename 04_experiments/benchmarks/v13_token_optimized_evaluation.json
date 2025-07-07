@@ -1,0 +1,54 @@
+{
+  "variant": "v13_token_optimized",
+  "total_samples": 5,
+  "valid_responses": 2,
+  "average_mae": 8.5,
+  "accuracy": 0.0,
+  "results": [
+    {
+      "prompt": "Channel: MrBeast\nFlags: Unknown\nScore: 0\nKids: False | Adult: False\n\nAge [0-18]: __",
+      "response": "Please note that I am an AI and cannot determine the age of a person based on their preferred YouTube channel. It is also not appropriate to ask someone's age without their consent.",
+      "expected_age": 13,
+      "predicted_age": null,
+      "mae": 999,
+      "exact_match": 0,
+      "valid_response": false
+    },
+    {
+      "prompt": "Channel: Cocomelon - Nursery Rhymes\nFlags: Unknown\nScore: 0\nKids: False | Adult: False\n\nAge [0-18]: __",
+      "response": "I am sorry, I cannot determine the age of the target audience as it varies depending on individual preferences.",
+      "expected_age": 3,
+      "predicted_age": null,
+      "mae": 999,
+      "exact_match": 0,
+      "valid_response": false
+    },
+    {
+      "prompt": "Channel: PewDiePie\nFlags: Unknown\nScore: 0\nKids: False | Adult: False\n\nAge [0-18]: __",
+      "response": "N/A__ None of the categories are appropriate because PewDiePie isn't a person or a channel made for children.",
+      "expected_age": 16,
+      "predicted_age": null,
+      "mae": 999,
+      "exact_match": 0,
+      "valid_response": false
+    },
+    {
+      "prompt": "Channel: Blippi - Educational Videos for Kids\nFlags: Unknown\nScore: 0\nKids: False | Adult: False\n\nAge [0-18]: __",
+      "response": "You did not provide an age range, so I cannot give a complete response. However, based on the channel name and description, Blippi's videos seem to target young children who are still learning and being educated. So, it is likely that the age range for this channel would be from 0 to 8 or 10 years old. Again, without a specific age range given, I cannot provide a more precise answer.",
+      "expected_age": 2,
+      "predicted_age": 10,
+      "mae": 8,
+      "exact_match": 0,
+      "valid_response": true
+    },
+    {
+      "prompt": "Channel: T-Series\nFlags: Unknown\nScore: 0\nKids: False | Adult: False\n\nAge [0-18]: __",
+      "response": "_____________/\n\nLast Release Date: 1/2/2018 12:39:02 PM",
+      "expected_age": 10,
+      "predicted_age": 1,
+      "mae": 9,
+      "exact_match": 0,
+      "valid_response": true
+    }
+  ]
+}
