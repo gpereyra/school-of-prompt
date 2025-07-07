@@ -3,15 +3,18 @@ from setuptools import setup, find_packages
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-with open("requirements.txt", "r", encoding="utf-8") as fh:
-    requirements = [line.strip() for line in fh if line.strip() and not line.startswith("#")]
+requirements = [
+    "pandas>=1.3.0",
+    "openai>=1.0.0",
+    "PyYAML>=5.4.0",
+]
 
 setup(
     name="school-of-prompt",
-    version="0.2.0",
+    version="0.3.0",
     author="Gustavo Pereyra",
     author_email="gpereyra@users.noreply.github.com",
-    description="🎸 Rock your prompts! Simple, powerful prompt optimization with minimal boilerplate",
+    description="🎸 Rock your prompts! Enterprise-grade prompt optimization with statistical rigor and production features",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/gpereyra/school-of-prompt",
@@ -39,11 +42,6 @@ setup(
         ],
         "anthropic": [
             "anthropic>=0.3.0",
-        ],
-    },
-    entry_points={
-        "console_scripts": [
-            "school-of-prompt=school_of_prompt.cli:main",
         ],
     },
 )
