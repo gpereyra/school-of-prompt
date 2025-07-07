@@ -1,12 +1,13 @@
-"""Prompt Optimization Framework
+"""School of Prompt 🎸
 
-A simple, powerful framework for optimizing prompts with minimal boilerplate.
+Rock your prompts! Simple, powerful prompt optimization with minimal boilerplate.
+Inspired by the School of Rock - where every prompt can be a rock star.
 """
 
 __version__ = "0.2.0"
-__author__ = "Prompt Optimization Team"
+__author__ = "School of Prompt Team"
 
-# Simple API - the main entry point
+# Main API
 from .optimize import optimize
 
 # Extension points for advanced users

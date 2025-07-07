@@ -1,5 +1,6 @@
 """
 Main optimization function - the simple API entry point.
+School of Prompt framework.
 """
 
 import os

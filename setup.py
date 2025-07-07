@@ -7,14 +7,14 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     requirements = [line.strip() for line in fh if line.strip() and not line.startswith("#")]
 
 setup(
-    name="prompt-optimizer",
+    name="school-of-prompt",
     version="0.2.0",
-    author="Prompt Optimization Team",
+    author="School of Prompt Team",
     author_email="",
-    description="Simple, powerful prompt optimization with minimal boilerplate",
+    description="🎸 Rock your prompts! Simple, powerful prompt optimization with minimal boilerplate",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/gpereyra/prompt-optimizing-framework",
+    url="https://github.com/gpereyra/school-of-prompt",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -43,7 +43,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "prompt-optimize=prompt_optimizer.cli:main",
+            "school-of-prompt=school_of_prompt.cli:main",
         ],
     },
 )

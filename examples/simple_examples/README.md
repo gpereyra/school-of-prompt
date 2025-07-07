@@ -1,6 +1,6 @@
-# Simple Examples
+# School of Prompt Examples 🎸
 
-These examples demonstrate the new simple `optimize()` API. Each is a complete, runnable example.
+Rock your prompts with these School of Rock themed examples! Each is a complete, runnable example that demonstrates the `optimize()` API.
 
 ## 🚀 Quick Start
 
@@ -9,56 +9,59 @@ These examples demonstrate the new simple `optimize()` API. Each is a complete, 
    export OPENAI_API_KEY="sk-your-key-here"
    ```
 
-2. **Run any example:**
+2. **Rock any example:**
    ```bash
-   python sentiment_analysis.py
-   python content_moderation.py
-   python age_rating_simple.py
+   python band_sentiment_analysis.py
+   python student_performance_rating.py
+   python rock_content_safety.py
    ```
 
-## 📝 Examples
+## 🎵 Examples
 
-### `sentiment_analysis.py`
-**Basic sentiment classification** - the "Hello World" of prompt optimization.
-- Demonstrates simple data loading
-- Shows prompt variants
+### 🎸 `band_sentiment_analysis.py`
+**Analyze fan reviews of the School of Rock band performances**
+- Demonstrates basic sentiment classification
+- School of Rock themed review data
+- Multiple prompt variants for fan sentiment analysis
 - Uses default metrics (accuracy, F1)
 
-### `content_moderation.py` 
-**Content safety classification** with custom metrics.
-- Custom `SafetyPrecision` metric
-- Model configuration (temperature, max_tokens)
-- Safety-focused prompting
-
-### `age_rating_simple.py`
-**Age rating prediction** - the original use case simplified.
-- Regression task (predicting 0-18 age rating)
-- MAE (Mean Absolute Error) metric
+### 🥁 `student_performance_rating.py` 
+**Rate student performances like Dewey would** 
+- Regression task (rating performances 1-10)
+- Custom performance evaluation data
+- MAE (Mean Absolute Error) metric for rating accuracy
 - Shows prediction vs actual comparison
 
-## 🆚 Compare with Legacy
+### 🛡️ `rock_content_safety.py`
+**Keep content school-appropriate for young rockers**
+- Content safety classification with custom metrics
+- Custom `RockSafetyPrecision` metric prioritizes catching inappropriate content
+- Model configuration (temperature=0.0 for consistency)
+- Safety-focused prompting for school environments
+
+## 🆚 Compare with Before
 
 Each example replaces 50+ lines of YAML config with ~5 lines of Python:
 
-**Before (legacy):**
+**Before (complex frameworks):**
 ```yaml
-# youtube_age_rating.yaml - 60+ lines
+# band_sentiment_analysis.yaml - 60+ lines
 task:
-  name: "youtube_age_rating"
-  type: "regression"
-  target_range: [0, 18]
+  name: "band_review_sentiment"
+  type: "classification"
+  classes: ["positive", "negative", "neutral"]
   
 data_source:
   type: "csv_file"
-  path: "data/youtube_videos.csv"
+  path: "data/band_reviews.csv"
   
 evaluation:
   metrics:
-    - name: "mae"
+    - name: "accuracy"
       config: {}
   variants:
-    - "baseline_prompt"
-    - "enhanced_prompt"
+    - "fan_feedback_prompt"
+    - "review_analysis_prompt"
     
 llm:
   provider: "openai"
@@ -67,26 +70,32 @@ llm:
 # ... 40 more lines
 ```
 
-**After (simple):**
+**After (School of Prompt):**
 ```python
 results = optimize(
-    data="youtube_videos.csv",
-    task="rate appropriate age from 0-18",
-    prompts=["What age is appropriate for: {title}"],
-    model="gpt-3.5-turbo"
+    data="band_reviews.csv",
+    task="classify sentiment",
+    prompts=["How does this fan feel about our band?"],
+    api_key="sk-..."
 )
 ```
 
 ## 🔧 Extension Points
 
-See `content_moderation.py` for examples of:
-- **Custom metrics**: Domain-specific evaluation
-- **Model configuration**: Temperature, max_tokens, etc.
-- **Multiple metrics**: Accuracy + precision + custom
+See `rock_content_safety.py` for examples of:
+- **Custom metrics**: `RockSafetyPrecision` for domain-specific evaluation
+- **Model configuration**: Temperature, max_tokens for consistent safety decisions
+- **Multiple metrics**: Accuracy + precision + custom safety metric
 
-## 💡 Tips
+## 💡 Tips for Rockers
 
-- Start with `sentiment_analysis.py` for the simplest example
-- Use `verbose=True` to see progress
+- Start with `band_sentiment_analysis.py` for the simplest example
+- Use `verbose=True` to see the optimization progress
 - Add `sample_size=100` to limit evaluation on large datasets
-- Set `output_dir="results"` to save detailed results
+- Set `output_dir="results"` to save detailed results for later analysis
+
+## 🎸 Rock On!
+
+Each example demonstrates that **you don't need to be a prompt engineering expert** to get great results. The School of Prompt framework handles the complexity so you can focus on rocking your specific use case!
+
+*"You're not hardcore unless you optimize hardcore!"* 🤘

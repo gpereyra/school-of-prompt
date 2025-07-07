@@ -1,19 +1,21 @@
-# Prompt Optimizer
+# School of Prompt 🎸
 
-**Simple, powerful prompt optimization with minimal boilerplate.**
+**Rock your prompts! Simple, powerful prompt optimization with minimal boilerplate.**
 
 Stop writing complex YAML configs. Start optimizing prompts in 3 lines of code.
+
+*Inspired by School of Rock - where every prompt can become a legend.*
 
 ## Quick Start
 
 ```python
-from prompt_optimizer import optimize
+from school_of_prompt import optimize
 
 # That's it! One function call to optimize prompts
 results = optimize(
-    data="reviews.csv",
+    data="band_reviews.csv",
     task="classify sentiment", 
-    prompts=["Is this positive?", "Rate the sentiment: positive/negative"],
+    prompts=["How does this fan feel about our band?", "Is this review positive or negative?"],
     api_key="sk-..."
 )
 
@@ -24,10 +26,10 @@ print(f"Accuracy: {results['best_score']:.2f}")
 ## Installation
 
 ```bash
-pip install prompt-optimizer
+pip install school-of-prompt
 ```
 
-## Why Prompt Optimizer?
+## Why School of Prompt?
 
 **Before** (complex frameworks):
 ```yaml
@@ -63,7 +65,7 @@ llm:
 # ... dozens more lines
 ```
 
-**After** (Prompt Optimizer):
+**After** (School of Prompt):
 ```python
 # 5 lines, done!
 results = optimize(
@@ -81,9 +83,9 @@ Perfect for quick experiments and getting started.
 
 ```python
 results = optimize(
-    data="data.csv",
+    data="band_reviews.csv",
     task="classify sentiment",
-    prompts=["Is this positive?", "Analyze sentiment"],
+    prompts=["How do fans feel about this?", "Analyze sentiment"],
     api_key="sk-..."
 )
 ```
@@ -93,15 +95,15 @@ Add configuration without complexity.
 
 ```python
 results = optimize(
-    data="reviews.csv",
-    task="classify sentiment",
-    prompts="prompts/sentiment_variants.txt",  # Read from file
+    data="student_performances.csv",
+    task="rate performance from 1-10",
+    prompts="prompts/performance_variants.txt",  # Read from file
     model={
         "name": "gpt-4", 
         "temperature": 0.1,
         "max_tokens": 50
     },
-    metrics=["accuracy", "f1", "precision"],
+    metrics=["mae", "accuracy"],
     sample_size=1000,
     api_key="sk-..."
 )
@@ -111,21 +113,21 @@ results = optimize(
 Custom everything for advanced use cases.
 
 ```python
-from prompt_optimizer import optimize, CustomMetric, CustomDataSource
+from school_of_prompt import optimize, CustomMetric, CustomDataSource
 
-class BusinessMetric(CustomMetric):
-    name = "business_value"
+class RockStarMetric(CustomMetric):
+    name = "rock_star_score"
     
     def calculate(self, predictions, actuals):
         # Your domain-specific metric
-        return calculate_business_impact(predictions, actuals)
+        return calculate_rock_star_potential(predictions, actuals)
 
 results = optimize(
     data=CustomDataSource(my_database),
     task=MyCustomTask(),
     prompts=dynamic_prompt_generator,
     model=my_llm_wrapper,
-    metrics=[BusinessMetric(), "accuracy"],
+    metrics=[RockStarMetric(), "accuracy"],
     api_key="sk-..."
 )
 ```
@@ -135,14 +137,14 @@ results = optimize(
 The framework automatically handles common scenarios:
 
 ### 📊 **Auto Data Loading**
-- **CSV files**: `data="reviews.csv"`
-- **JSONL files**: `data="data.jsonl"`
+- **CSV files**: `data="band_reviews.csv"`
+- **JSONL files**: `data="performances.jsonl"`
 - **DataFrames**: `data=my_dataframe`
 - **Custom sources**: `data=MyDataSource()`
 
 ### 🎯 **Auto Task Detection**
 - **"classify sentiment"** → Sentiment classification
-- **"rate from 1-10"** → Regression task  
+- **"rate from 1-10"** → Performance rating task  
 - **"categorize content"** → Multi-class classification
 - **"generate summary"** → Text generation
 
@@ -156,43 +158,43 @@ The framework automatically handles common scenarios:
 - **Config**: `model={"name": "gpt-4", "temperature": 0.1}`
 - **Custom**: `model=MyModel()`
 
-## Examples
+## Rock Star Examples
 
-### Sentiment Analysis
+### 🎸 Band Review Sentiment Analysis
 ```python
 results = optimize(
-    data="movie_reviews.csv",
+    data="fan_reviews.csv",
     task="classify sentiment",
     prompts=[
-        "Is this movie review positive or negative?",
-        "Sentiment: {text}",
-        "Rate this review as positive, negative, or neutral: {text}"
+        "How does this fan feel about our band performance?",
+        "Is this review positive, negative, or neutral?",
+        "Fan reaction analysis: {review}"
     ],
     api_key=os.getenv("OPENAI_API_KEY")
 )
 ```
 
-### Content Moderation
+### 🥁 Student Performance Rating
 ```python
 results = optimize(
-    data="user_posts.csv", 
-    task="classify safety level",
+    data="student_performances.csv", 
+    task="rate performance from 1-10",
     prompts=[
-        "Is this content safe for work?",
-        "Rate content safety: safe/unsafe",
-        "Does this violate community guidelines?"
+        "Rate this {instrument} performance from 1-10: {performance}",
+        "As a rock teacher, how would you score this?",
+        "School of Rock grade: {performance}"
     ],
     model="gpt-4",
-    metrics=["accuracy", "precision", "recall"]
+    metrics=["mae", "accuracy"]
 )
 ```
 
-### Document Classification
+### 🛡️ Content Safety for Young Rockers
 ```python
 results = optimize(
-    data="legal_docs.jsonl",
-    task="categorize document type", 
-    prompts="prompts/legal_classification.txt",
+    data="song_lyrics.csv",
+    task="classify content as school-appropriate", 
+    prompts="prompts/safety_check.txt",
     model={
         "name": "gpt-4",
         "temperature": 0.0,
@@ -202,7 +204,7 @@ results = optimize(
 )
 ```
 
-### Age Rating (Original Use Case)
+### 🎤 Original Use Case: Age Rating
 ```python
 results = optimize(
     data="youtube_videos.csv",
@@ -221,7 +223,7 @@ results = optimize(
 
 ### `optimize()`
 
-The main optimization function.
+The main optimization function - rock your prompts!
 
 **Parameters:**
 - **`data`** *(str|DataFrame|CustomDataSource)*: Your dataset
@@ -238,7 +240,7 @@ The main optimization function.
 **Returns:**
 ```python
 {
-    "best_prompt": "Is this positive?",
+    "best_prompt": "How does this fan feel about our band?",
     "best_score": 0.892,
     "prompts": {
         "prompt_1": {"scores": {"accuracy": 0.856, "f1_score": 0.834}},
@@ -267,47 +269,47 @@ Your data should have:
 
 **CSV Example:**
 ```csv
-text,label
-"Great movie!",positive
-"Terrible film.",negative
+review,sentiment
+"The band was amazing!",positive
+"Terrible performance.",negative
 "It was okay.",neutral
 ```
 
 **JSONL Example:**
 ```json
-{"text": "Great movie!", "label": "positive"}
-{"text": "Terrible film.", "label": "negative"}
+{"review": "The band was amazing!", "sentiment": "positive"}
+{"review": "Terrible performance.", "sentiment": "negative"}
 ```
 
 ## Extension Points
 
-For advanced users who need custom behavior:
+For advanced rockers who need custom behavior:
 
 ```python
-from prompt_optimizer import CustomMetric, CustomDataSource, CustomModel, CustomTask
+from school_of_prompt import CustomMetric, CustomDataSource, CustomModel, CustomTask
 
-class MyMetric(CustomMetric):
-    name = "my_metric"
+class MyRockMetric(CustomMetric):
+    name = "rock_factor"
     def calculate(self, predictions, actuals):
-        return my_calculation(predictions, actuals)
+        return calculate_rock_awesomeness(predictions, actuals)
 
 class MyDataSource(CustomDataSource):
     def load(self):
-        return load_from_database()
+        return load_from_rock_database()
 
 class MyModel(CustomModel):
     def generate(self, prompt):
-        return my_llm_call(prompt)
+        return my_rock_llm_call(prompt)
 
 class MyTask(CustomTask):
     def format_prompt(self, template, sample):
         return template.format(**sample)
     
     def extract_prediction(self, response):
-        return parse_response(response)
+        return parse_rock_response(response)
     
     def get_ground_truth(self, sample):
-        return sample["label"]
+        return sample["rock_rating"]
 ```
 
 ## Roadmap
@@ -320,12 +322,14 @@ class MyTask(CustomTask):
 
 ## Contributing
 
-We'd love your help! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+We'd love your help! Rock on and contribute to make this even better.
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+MIT License. Rock freely! 🤘
 
 ---
 
-**Stop configuring. Start optimizing.** 🚀
+**School of Prompt: Where prompts learn to rock!** 🎸
+
+*"You're not hardcore unless you optimize hardcore!"* - Dewey Finn (probably)
