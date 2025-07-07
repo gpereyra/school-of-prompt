@@ -1,8 +1,6 @@
 # School of Prompt 🎸
 
-**Rock your prompts! Simple, powerful prompt optimization with minimal boilerplate.**
-
-Stop writing complex YAML configs. Start optimizing prompts in 3 lines of code.
+**Simple, powerful prompt optimization with minimal boilerplate.**
 
 *Inspired by School of Rock - where every prompt can become a legend.*
 
@@ -29,52 +27,7 @@ print(f"Accuracy: {results['best_score']:.2f}")
 pip install school-of-prompt
 ```
 
-## Why School of Prompt?
-
-**Before** (complex frameworks):
-```yaml
-# 50+ lines of YAML config
-task:
-  name: "sentiment_classification"
-  type: "classification"
-  classes: ["positive", "negative"]
-  
-data_source:
-  type: "csv_file"
-  path: "reviews.csv"
-  preprocessing:
-    - normalize_text
-    - remove_duplicates
-    
-evaluation:
-  metrics:
-    - name: "accuracy"
-      config: {...}
-    - name: "f1_score"
-      config: {...}
-  cross_validation:
-    folds: 5
-    
-llm:
-  provider: "openai"
-  model: "gpt-3.5-turbo"
-  parameters:
-    temperature: 0.0
-    max_tokens: 50
-    
-# ... dozens more lines
-```
-
-**After** (School of Prompt):
-```python
-# 5 lines, done!
-results = optimize(
-    data="reviews.csv",
-    task="classify sentiment",
-    prompts=["Is this positive?", "Rate sentiment"],
-    api_key="sk-..."
-)
-```
+## Features
 
 ## Features
 
@@ -204,7 +157,7 @@ results = optimize(
 )
 ```
 
-### 🎤 Original Use Case: Age Rating
+### 🎬 Age Rating Classification
 ```python
 results = optimize(
     data="youtube_videos.csv",

@@ -39,38 +39,10 @@ Rock your prompts with these School of Rock themed examples! Each is a complete,
 - Model configuration (temperature=0.0 for consistency)
 - Safety-focused prompting for school environments
 
-## 🆚 Compare with Before
+## 🎯 Simple Usage
 
-Each example replaces 50+ lines of YAML config with ~5 lines of Python:
+Each example shows the power of the `optimize()` function:
 
-**Before (complex frameworks):**
-```yaml
-# band_sentiment_analysis.yaml - 60+ lines
-task:
-  name: "band_review_sentiment"
-  type: "classification"
-  classes: ["positive", "negative", "neutral"]
-  
-data_source:
-  type: "csv_file"
-  path: "data/band_reviews.csv"
-  
-evaluation:
-  metrics:
-    - name: "accuracy"
-      config: {}
-  variants:
-    - "fan_feedback_prompt"
-    - "review_analysis_prompt"
-    
-llm:
-  provider: "openai"
-  model: "gpt-3.5-turbo"
-  
-# ... 40 more lines
-```
-
-**After (School of Prompt):**
 ```python
 results = optimize(
     data="band_reviews.csv",
@@ -96,6 +68,6 @@ See `rock_content_safety.py` for examples of:
 
 ## 🎸 Rock On!
 
-Each example demonstrates that **you don't need to be a prompt engineering expert** to get great results. The School of Prompt framework handles the complexity so you can focus on rocking your specific use case!
+Each example demonstrates that **you don't need to be a prompt engineering expert** to get great results. The framework handles the complexity so you can focus on your specific use case!
 
 *"You're not hardcore unless you optimize hardcore!"* 🤘
