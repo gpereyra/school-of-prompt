@@ -1,144 +1,331 @@
-# AgeRate Prompt Evaluation Pipeline
+# Prompt Optimizer
 
-A structured MLOps pipeline for evaluating and optimizing YouTube channel age rating prompts using real YouTube API data and automated content analysis.
+**Simple, powerful prompt optimization with minimal boilerplate.**
 
-## 🏗️ Pipeline Structure
+Stop writing complex YAML configs. Start optimizing prompts in 3 lines of code.
 
-```
-📁 agerate-prompt-evals/
-├── 📁 01_data_collection/           # YouTube API integration (future)
-├── 📁 02_data_preparation/          # Data enrichment & content analysis
-│   └── enrichment_pipeline.py      # Automated content labeling
-├── 📁 03_evaluation/               # Prompt evaluation system
-│   ├── prompt_evaluator.py        # Core evaluation engine
-│   └── prompts/
-│       └── variants.py            # 13 prompt variants (v1-v13)
-├── 📁 04_experiments/              # Experiment tracking & results
-│   └── benchmarks/                # Benchmark outputs
-├── 📁 05_artifacts/                # Generated datasets & reports
-│   └── datasets/                  # Ground truth & enriched data
-├── 📁 cache/                       # Persistent API response cache
-├── 📁 config/                      # Configuration management
-└── 📁 scripts/                     # Utility scripts
-```
+## Quick Start
 
-## 🚀 Quick Start
+```python
+from prompt_optimizer import optimize
 
-### 1. Setup Environment
-```bash
-pip install -r requirements.txt
+# That's it! One function call to optimize prompts
+results = optimize(
+    data="reviews.csv",
+    task="classify sentiment", 
+    prompts=["Is this positive?", "Rate the sentiment: positive/negative"],
+    api_key="sk-..."
+)
+
+print(f"Best prompt: {results['best_prompt']}")
+print(f"Accuracy: {results['best_score']:.2f}")
 ```
 
-### 2. Configure API Keys
-```bash
-cp config/api_keys.json.example config/api_keys.json
-# Edit with your YouTube Data API v3 and OpenAI API keys
-```
-
-### 3. Run Complete Pipeline
-```bash
-# Full pipeline: data enrichment + evaluation
-python run_pipeline.py full --variant v11_enriched
-
-# Just data enrichment (first time setup)
-python run_pipeline.py enrich --limit-rows 10 --test-random
-
-# Just prompt evaluation (using cached data)
-python run_pipeline.py evaluate --variant v12_criteria_based
-```
-
-## 📊 Available Prompt Variants
-
-| Variant | Description | Token Usage | Best For |
-|---------|-------------|-------------|----------|
-| `v1_baseline` | Original user prompt | Medium | Baseline comparison |
-| `v11_enriched` | Uses automated content analysis | Medium | Balanced accuracy |
-| `v12_criteria_based` | Logic-driven evaluation | Medium | Consistent results |
-| `v13_token_optimized` | Minimal token usage | Very Low | Cost optimization |
-
-## 🔧 Key Features
-
-✅ **Zero-quota evaluation**: Leverages comprehensive API response caching  
-✅ **Enriched content analysis**: 10+ automated content safety criteria  
-✅ **Token optimization**: Variants from 100-600 tokens per evaluation  
-✅ **Real YouTube data**: Uses live API data with intelligent caching  
-✅ **Structured methodology**: MLOps pipeline with clear separation of concerns  
-
-## 📈 Pipeline Stages
-
-### Stage 1: Data Preparation
-```bash
-cd 02_data_preparation
-python enrichment_pipeline.py
-```
-- Fetches YouTube channel metadata
-- Analyzes content for safety indicators
-- Generates maturity scores and content flags
-- Caches all API responses (24h expiry)
-
-### Stage 2: Prompt Evaluation  
-```bash
-cd 03_evaluation
-python prompt_evaluator.py
-```
-- Leverages cached enriched data
-- Tests multiple prompt variants
-- Calculates MAE and accuracy metrics
-- Generates comparison reports
-
-## 🎯 Results
-
-Recent benchmark (10 channels, cached data):
-- **v11_enriched**: 0.8 MAE, 60% accuracy, 666 tokens
-- **v12_criteria_based**: 1.2 MAE, 40% accuracy, 450 tokens  
-- **v13_token_optimized**: 8.3 MAE, 10% accuracy, 105 tokens
-
-## 🛠️ Cache Management
+## Installation
 
 ```bash
-# Cache statistics
-python scripts/cleanup.py stats
-
-# Clear expired cache
-python scripts/cleanup.py clean --expired
-
-# Full cache reset (use carefully - costs API quota)
-python scripts/cleanup.py clean --all
+pip install prompt-optimizer
 ```
 
-## 🔑 API Requirements
+## Why Prompt Optimizer?
 
-- **YouTube Data API v3**: Channel metadata, video details
-- **OpenAI API**: GPT-3.5-turbo-instruct for age predictions
-
-## 📋 Dataset Format
-
-Ground truth CSV format:
-```csv
-YouTube_Channel,Minimum_Age,ESRB_Category,Description,Inclusion_Criteria,Source
-KSI,18,AO,Gaming and entertainment,Adult,Manual
-Little Angel,3,E,Children's content,Children,Manual
+**Before** (complex frameworks):
+```yaml
+# 50+ lines of YAML config
+task:
+  name: "sentiment_classification"
+  type: "classification"
+  classes: ["positive", "negative"]
+  
+data_source:
+  type: "csv_file"
+  path: "reviews.csv"
+  preprocessing:
+    - normalize_text
+    - remove_duplicates
+    
+evaluation:
+  metrics:
+    - name: "accuracy"
+      config: {...}
+    - name: "f1_score"
+      config: {...}
+  cross_validation:
+    folds: 5
+    
+llm:
+  provider: "openai"
+  model: "gpt-3.5-turbo"
+  parameters:
+    temperature: 0.0
+    max_tokens: 50
+    
+# ... dozens more lines
 ```
 
-Enriched data includes automated analysis:
-```json
+**After** (Prompt Optimizer):
+```python
+# 5 lines, done!
+results = optimize(
+    data="reviews.csv",
+    task="classify sentiment",
+    prompts=["Is this positive?", "Rate sentiment"],
+    api_key="sk-..."
+)
+```
+
+## Features
+
+### 🚀 **Level 0: Dead Simple**
+Perfect for quick experiments and getting started.
+
+```python
+results = optimize(
+    data="data.csv",
+    task="classify sentiment",
+    prompts=["Is this positive?", "Analyze sentiment"],
+    api_key="sk-..."
+)
+```
+
+### 🎛️ **Level 1: More Control**
+Add configuration without complexity.
+
+```python
+results = optimize(
+    data="reviews.csv",
+    task="classify sentiment",
+    prompts="prompts/sentiment_variants.txt",  # Read from file
+    model={
+        "name": "gpt-4", 
+        "temperature": 0.1,
+        "max_tokens": 50
+    },
+    metrics=["accuracy", "f1", "precision"],
+    sample_size=1000,
+    api_key="sk-..."
+)
+```
+
+### 🔧 **Level 2: Full Extension**
+Custom everything for advanced use cases.
+
+```python
+from prompt_optimizer import optimize, CustomMetric, CustomDataSource
+
+class BusinessMetric(CustomMetric):
+    name = "business_value"
+    
+    def calculate(self, predictions, actuals):
+        # Your domain-specific metric
+        return calculate_business_impact(predictions, actuals)
+
+results = optimize(
+    data=CustomDataSource(my_database),
+    task=MyCustomTask(),
+    prompts=dynamic_prompt_generator,
+    model=my_llm_wrapper,
+    metrics=[BusinessMetric(), "accuracy"],
+    api_key="sk-..."
+)
+```
+
+## Smart Defaults
+
+The framework automatically handles common scenarios:
+
+### 📊 **Auto Data Loading**
+- **CSV files**: `data="reviews.csv"`
+- **JSONL files**: `data="data.jsonl"`
+- **DataFrames**: `data=my_dataframe`
+- **Custom sources**: `data=MyDataSource()`
+
+### 🎯 **Auto Task Detection**
+- **"classify sentiment"** → Sentiment classification
+- **"rate from 1-10"** → Regression task  
+- **"categorize content"** → Multi-class classification
+- **"generate summary"** → Text generation
+
+### 📏 **Auto Metrics Selection**
+- **Classification** → Accuracy, F1-score
+- **Regression** → MAE, RMSE
+- **Generation** → BLEU, ROUGE (coming soon)
+
+### 🤖 **Auto Model Setup**
+- **String**: `model="gpt-4"` 
+- **Config**: `model={"name": "gpt-4", "temperature": 0.1}`
+- **Custom**: `model=MyModel()`
+
+## Examples
+
+### Sentiment Analysis
+```python
+results = optimize(
+    data="movie_reviews.csv",
+    task="classify sentiment",
+    prompts=[
+        "Is this movie review positive or negative?",
+        "Sentiment: {text}",
+        "Rate this review as positive, negative, or neutral: {text}"
+    ],
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+```
+
+### Content Moderation
+```python
+results = optimize(
+    data="user_posts.csv", 
+    task="classify safety level",
+    prompts=[
+        "Is this content safe for work?",
+        "Rate content safety: safe/unsafe",
+        "Does this violate community guidelines?"
+    ],
+    model="gpt-4",
+    metrics=["accuracy", "precision", "recall"]
+)
+```
+
+### Document Classification
+```python
+results = optimize(
+    data="legal_docs.jsonl",
+    task="categorize document type", 
+    prompts="prompts/legal_classification.txt",
+    model={
+        "name": "gpt-4",
+        "temperature": 0.0,
+        "max_tokens": 20
+    },
+    sample_size=500
+)
+```
+
+### Age Rating (Original Use Case)
+```python
+results = optimize(
+    data="youtube_videos.csv",
+    task="rate appropriate age from 0-18",
+    prompts=[
+        "What age is appropriate for: {title} - {description}",
+        "Age rating for: {title}. Content: {description}",
+        "Minimum age for this content: {title}"
+    ],
+    model="gpt-3.5-turbo",
+    metrics=["mae", "accuracy"]
+)
+```
+
+## API Reference
+
+### `optimize()`
+
+The main optimization function.
+
+**Parameters:**
+- **`data`** *(str|DataFrame|CustomDataSource)*: Your dataset
+- **`task`** *(str|CustomTask)*: Task description or custom task
+- **`prompts`** *(str|List[str]|Path)*: Prompt variants to test
+- **`model`** *(str|dict|CustomModel)*: Model configuration
+- **`metrics`** *(List[str]|List[CustomMetric])*: Evaluation metrics
+- **`api_key`** *(str)*: API key (or set `OPENAI_API_KEY` env var)
+- **`sample_size`** *(int)*: Limit evaluation to N samples
+- **`random_seed`** *(int)*: For reproducible sampling
+- **`output_dir`** *(str)*: Save detailed results
+- **`verbose`** *(bool)*: Print progress
+
+**Returns:**
+```python
 {
-  "is_educational_content": true,
-  "is_explicit_adult_content": false,
-  "maturity_score": 2.5,
-  "total_adult_content_score": 1.0
+    "best_prompt": "Is this positive?",
+    "best_score": 0.892,
+    "prompts": {
+        "prompt_1": {"scores": {"accuracy": 0.856, "f1_score": 0.834}},
+        "prompt_2": {"scores": {"accuracy": 0.892, "f1_score": 0.889}}
+    },
+    "summary": {"metrics": {...}},
+    "details": [...]
 }
 ```
 
-## 🔬 Methodology
+## Environment Setup
 
-Based on modern MLOps practices:
-1. **Data Collection**: Automated YouTube API integration
-2. **Data Preparation**: Content analysis and safety scoring  
-3. **Model Evaluation**: Multi-variant prompt testing
-4. **Experiment Tracking**: Structured result comparison
-5. **Artifact Management**: Versioned datasets and models
+```bash
+# Set your API key
+export OPENAI_API_KEY="sk-your-key-here"
+
+# Or pass directly
+results = optimize(..., api_key="sk-your-key-here")
+```
+
+## Data Format
+
+Your data should have:
+- **Input columns**: Text or features to analyze
+- **Label column**: Ground truth (named `label`, `target`, `class`, etc.)
+
+**CSV Example:**
+```csv
+text,label
+"Great movie!",positive
+"Terrible film.",negative
+"It was okay.",neutral
+```
+
+**JSONL Example:**
+```json
+{"text": "Great movie!", "label": "positive"}
+{"text": "Terrible film.", "label": "negative"}
+```
+
+## Extension Points
+
+For advanced users who need custom behavior:
+
+```python
+from prompt_optimizer import CustomMetric, CustomDataSource, CustomModel, CustomTask
+
+class MyMetric(CustomMetric):
+    name = "my_metric"
+    def calculate(self, predictions, actuals):
+        return my_calculation(predictions, actuals)
+
+class MyDataSource(CustomDataSource):
+    def load(self):
+        return load_from_database()
+
+class MyModel(CustomModel):
+    def generate(self, prompt):
+        return my_llm_call(prompt)
+
+class MyTask(CustomTask):
+    def format_prompt(self, template, sample):
+        return template.format(**sample)
+    
+    def extract_prediction(self, response):
+        return parse_response(response)
+    
+    def get_ground_truth(self, sample):
+        return sample["label"]
+```
+
+## Roadmap
+
+- **More Models**: Anthropic Claude, local models, Azure OpenAI
+- **More Metrics**: BLEU, ROUGE, custom domain metrics  
+- **Auto Optimization**: Genetic algorithms, Bayesian optimization
+- **Batch Processing**: Handle large datasets efficiently
+- **Caching**: Speed up repeated evaluations
+
+## Contributing
+
+We'd love your help! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
-*Built for optimizing AI safety in content moderation through systematic prompt engineering.*
+**Stop configuring. Start optimizing.** 🚀

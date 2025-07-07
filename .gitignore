@@ -1,12 +1,25 @@
-# API keys and config
-config.json
+# API keys and sensitive config
+config/api_keys.json
+examples/config/api_keys.json
+**/api_keys.json
+*.key
+*.secret
+**/config/api_keys.json
 
-# Cache directories
+# Framework cache and results
 cache/
-
-# Results
 results/
+experiments/
 benchmark_results.csv
+*.jsonl.tmp
+
+# Framework config files
+prompt_optimizer/core/config.py
+
+# Temporary files
+temp/
+tmp/
+*.tmp
 
 # Python
 __pycache__/
