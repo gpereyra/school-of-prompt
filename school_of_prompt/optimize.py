@@ -5,7 +5,7 @@ School of Prompt framework.
 
 import os
 import pandas as pd
-from typing import Union, List, Dict, Any, Optional, Callable
+from typing import Union, List, Dict, Any, Optional
 from pathlib import Path
 
 from .core.simple_interfaces import SimpleMetric, SimpleDataSource, SimpleModel, SimpleTask
@@ -29,7 +29,7 @@ def optimize(
 ) -> Dict[str, Any]:
     """
     Optimize prompts with minimal setup required.
-    
+
     Args:
         data: Path to CSV/JSONL file, DataFrame, or custom data source
         task: Task description (e.g., "classify sentiment") or custom task
@@ -41,19 +41,19 @@ def optimize(
         random_seed: Random seed for reproducibility
         output_dir: Directory to save results (optional)
         verbose: Print progress information
-        
+
     Returns:
         Dictionary with results including scores, best prompt, and analysis
-        
+
     Examples:
         # Level 0 - Dead simple
         results = optimize(
             data="reviews.csv",
-            task="classify sentiment", 
+            task="classify sentiment",
             prompts=["Is this positive?", "Rate the sentiment"],
             api_key="sk-..."
         )
-        
+
         # Level 1 - More control
         results = optimize(
             data="reviews.csv",
@@ -64,38 +64,42 @@ def optimize(
             sample_size=1000
         )
     """
-    
+
     # Handle API key
     if api_key is None:
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
-            raise ValueError("API key required. Set OPENAI_API_KEY env var or pass api_key parameter.")
-    
+            raise ValueError(
+                "API key required. Set OPENAI_API_KEY env var or pass api_key parameter.")
+
     # Auto-load data
     if verbose:
         print("📁 Loading data...")
-    dataset = auto_load_data(data, sample_size=sample_size, random_seed=random_seed)
-    
+    dataset = auto_load_data(
+        data,
+        sample_size=sample_size,
+        random_seed=random_seed)
+
     # Auto-detect or create task
     if verbose:
         print("🎯 Setting up task...")
     task_obj = auto_detect_task(task, dataset)
-    
+
     # Load prompts
     if verbose:
         print("📝 Loading prompts...")
     prompt_variants = _load_prompts(prompts)
-    
+
     # Auto-create model
     if verbose:
         print("🤖 Setting up model...")
     model_obj = auto_create_model(model, api_key)
-    
+
     # Auto-select metrics
     if verbose:
         print("📊 Setting up metrics...")
     metrics_list = auto_select_metrics(metrics, task_obj)
-    
+
     # Run optimization
     if verbose:
         print("🚀 Running optimization...")
@@ -107,15 +111,15 @@ def optimize(
         metrics=metrics_list,
         verbose=verbose
     )
-    
+
     # Save results if requested
     if output_dir:
         _save_results(results, output_dir, verbose)
-    
+
     if verbose:
         print("✅ Optimization complete!")
         _print_summary(results)
-    
+
     return results
 
 
@@ -133,7 +137,8 @@ def _load_prompts(prompts: Union[str, List[str], Path]) -> List[str]:
     elif isinstance(prompts, list):
         return prompts
     else:
-        raise ValueError("prompts must be string, list of strings, or path to file")
+        raise ValueError(
+            "prompts must be string, list of strings, or path to file")
 
 
 def _run_optimization(
@@ -145,7 +150,7 @@ def _run_optimization(
     verbose: bool
 ) -> Dict[str, Any]:
     """Run the actual optimization process."""
-    
+
     results = {
         "prompts": {},
         "best_prompt": None,
@@ -153,11 +158,12 @@ def _run_optimization(
         "summary": {},
         "details": []
     }
-    
+
     for i, prompt in enumerate(prompts):
         if verbose:
-            print(f"  Evaluating prompt {i+1}/{len(prompts)}: {prompt[:50]}...")
-        
+            print(
+                f"  Evaluating prompt {i + 1}/{len(prompts)}: {prompt[:50]}...")
+
         prompt_results = _evaluate_prompt(
             prompt=prompt,
             dataset=dataset,
@@ -165,19 +171,19 @@ def _run_optimization(
             model=model,
             metrics=metrics
         )
-        
-        results["prompts"][f"prompt_{i+1}"] = prompt_results
+
+        results["prompts"][f"prompt_{i + 1}"] = prompt_results
         results["details"].append(prompt_results)
-        
+
         # Track best prompt (using first metric as primary)
         primary_score = prompt_results["scores"][metrics[0].name]
         if results["best_score"] is None or primary_score > results["best_score"]:
             results["best_prompt"] = prompt
             results["best_score"] = primary_score
-    
+
     # Generate summary
     results["summary"] = _generate_summary(results["details"], metrics)
-    
+
     return results
 
 
@@ -189,28 +195,28 @@ def _evaluate_prompt(
     metrics: List[SimpleMetric]
 ) -> Dict[str, Any]:
     """Evaluate a single prompt against the dataset."""
-    
+
     predictions = []
     actuals = []
-    
+
     for sample in dataset:
         # Format prompt with sample data
         formatted_prompt = task.format_prompt(prompt, sample)
-        
+
         # Get model prediction
         response = model.generate(formatted_prompt)
         prediction = task.extract_prediction(response)
         actual = task.get_ground_truth(sample)
-        
+
         predictions.append(prediction)
         actuals.append(actual)
-    
+
     # Calculate metrics
     scores = {}
     for metric in metrics:
         score = metric.calculate(predictions, actuals)
         scores[metric.name] = score
-    
+
     return {
         "prompt": prompt,
         "scores": scores,
@@ -220,10 +226,11 @@ def _evaluate_prompt(
     }
 
 
-def _generate_summary(details: List[Dict[str, Any]], metrics: List[SimpleMetric]) -> Dict[str, Any]:
+def _generate_summary(
+        details: List[Dict[str, Any]], metrics: List[SimpleMetric]) -> Dict[str, Any]:
     """Generate summary statistics across all prompts."""
     summary = {"metrics": {}}
-    
+
     for metric in metrics:
         scores = [d["scores"][metric.name] for d in details]
         summary["metrics"][metric.name] = {
@@ -232,39 +239,40 @@ def _generate_summary(details: List[Dict[str, Any]], metrics: List[SimpleMetric]
             "max": max(scores),
             "range": max(scores) - min(scores)
         }
-    
+
     return summary
 
 
-def _save_results(results: Dict[str, Any], output_dir: str, verbose: bool) -> None:
+def _save_results(results: Dict[str, Any],
+                  output_dir: str, verbose: bool) -> None:
     """Save results to output directory."""
     import json
     from datetime import datetime
-    
+
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
-    
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     results_file = output_path / f"optimization_results_{timestamp}.json"
-    
+
     with open(results_file, 'w') as f:
         json.dump(results, f, indent=2, default=str)
-    
+
     if verbose:
         print(f"💾 Results saved to {results_file}")
 
 
 def _print_summary(results: Dict[str, Any]) -> None:
     """Print a summary of results."""
-    print("\n" + "="*50)
+    print("\n" + "=" * 50)
     print("🏆 OPTIMIZATION RESULTS")
-    print("="*50)
-    
+    print("=" * 50)
+
     print(f"\nBest Prompt: {results['best_prompt']}")
     print(f"Best Score: {results['best_score']:.4f}")
-    
+
     print(f"\nEvaluated {len(results['prompts'])} prompt variants")
-    
+
     # Show metric comparison
     if results['details']:
         print("\nMetric Comparison:")

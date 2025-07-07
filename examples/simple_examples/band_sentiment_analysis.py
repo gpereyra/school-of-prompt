@@ -6,6 +6,7 @@ Analyze fan reviews of the School of Rock band performances!
 import os
 from school_of_prompt import optimize
 
+
 def main():
     # School of Rock band performance reviews
     band_reviews = [
@@ -18,12 +19,12 @@ def main():
         {"review": "This band rocks! They're going to be famous someday!", "sentiment": "positive"},
         {"review": "Boring performance, I've seen middle schoolers play better.", "sentiment": "negative"},
     ]
-    
+
     # Save sample data to CSV for demo
     import pandas as pd
     df = pd.DataFrame(band_reviews)
     df.to_csv("band_reviews.csv", index=False)
-    
+
     # Optimize prompts for analyzing band review sentiment
     results = optimize(
         data="band_reviews.csv",
@@ -37,16 +38,17 @@ def main():
         api_key=os.getenv("OPENAI_API_KEY"),
         verbose=True
     )
-    
+
     print("\\n" + "🎸" * 50)
     print("SCHOOL OF ROCK BAND REVIEW ANALYSIS")
     print("🎸" * 50)
     print(f"Best prompt for analyzing fan reviews: {results['best_prompt']}")
     print(f"Sentiment analysis accuracy: {results['best_score']:.3f}")
     print("\\nNow we know how to analyze what fans think of our rock shows! 🤘")
-    
+
     # Clean up demo file
     os.remove("band_reviews.csv")
+
 
 if __name__ == "__main__":
     if not os.getenv("OPENAI_API_KEY"):

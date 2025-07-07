@@ -1,10 +1,14 @@
 # API keys and sensitive config
-config/api_keys.json
-examples/config/api_keys.json
 **/api_keys.json
 *.key
 *.secret
-**/config/api_keys.json
+*.env
+.env.*
+*.pem
+*.p12
+*.pfx
+credentials.json
+auth_config.json
 
 # Framework cache and results
 cache/
@@ -13,8 +17,16 @@ experiments/
 benchmark_results.csv
 *.jsonl.tmp
 
-# Framework config files
-prompt_optimizer/core/config.py
+# Generated data files from examples
+*.csv
+*.jsonl
+*.sqlite
+*.db
+*.log
+
+# Test outputs 
+test_results/
+coverage_reports/
 
 # Temporary files
 temp/
@@ -46,20 +58,33 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+# Testing
+.pytest_cache/
+.tox/
+.coverage
+htmlcov/
+.nox/
+.cache
+
 # Virtual environments
-.env
-.venv
+.venv/
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+.conda/
+conda-meta/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+.vimrc
+.nvimrc
+.sublime-*
+*.code-workspace
 
 # OS
 .DS_Store
@@ -69,3 +94,17 @@ venv.bak/
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
+*.lnk
+
+# PyPI package files
+*.whl
+*.tar.gz
+dist/
+build/
+*.egg-info/
+
+# Documentation builds
+docs/_build/
+site/
+_site/

@@ -21,10 +21,10 @@ from .core.simple_interfaces import (
 __all__ = [
     # Main API
     "optimize",
-    
+
     # Extension interfaces
     "CustomMetric",
-    "CustomDataSource", 
+    "CustomDataSource",
     "CustomModel",
     "CustomTask",
 ]
