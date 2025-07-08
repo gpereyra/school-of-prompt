@@ -11,7 +11,7 @@ requirements = [
 
 setup(
     name="school-of-prompt",
-    version="0.3.0",
+    version="0.4.0",
     author="Gustavo Pereyra",
     author_email="gpereyra@users.noreply.github.com",
     description="🎸 Rock your prompts! Enterprise-grade prompt optimization with statistical rigor and production features",
