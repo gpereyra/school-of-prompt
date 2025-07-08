@@ -76,9 +76,19 @@ def test_basic_api_call():
     """Test a minimal API call to verify connectivity."""
     print("🧪 Testing basic API connectivity...")
 
+    # Check if API key is available
+    import os
+
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        print("⚠️ OPENAI_API_KEY not set. Skipping live API test.")
+        pytest = __import__("pytest")
+        pytest.skip("OPENAI_API_KEY environment variable not set")
+
     try:
         import pandas as pd
-        from prompt_optimizer import optimize
+
+        from school_of_prompt import optimize
 
         # Minimal test data
         data = pd.DataFrame(
@@ -100,14 +110,14 @@ def test_basic_api_call():
         if "best_prompt" in results and "best_score" in results:
             print("✅ Basic API call successful")
             print(f"   Best score: {results['best_score']:.2f}")
-            return True
+            assert True  # Test passed
         else:
             print("❌ API call succeeded but unexpected result format")
-            return False
+            assert False, "API call succeeded but unexpected result format"
 
     except Exception as e:
         print(f"❌ Basic API call failed: {e}")
-        return False
+        assert False, f"Basic API call failed: {e}"
 
 
 def main():

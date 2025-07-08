@@ -23,7 +23,8 @@ class FrameworkConfig:
         elif config_path:
             self.config = self._load_config(config_path)
         else:
-            raise ValueError("Either config_path or config_dict must be provided")
+            # Provide default empty configuration
+            self.config = {}
 
     def _load_config(self, config_path: str) -> Dict[str, Any]:
         """Load configuration from file."""

@@ -472,3 +472,16 @@ def get_recommended_metrics(
     else:
         # Default comprehensive set
         return ["accuracy", "mae", "valid_rate", "response_quality"]
+
+
+def get_metric_function(name: str):
+    """Get a metric function by name for testing and advanced usage.
+
+    Args:
+        name: Name of the metric
+
+    Returns:
+        Function that takes (predictions, actuals) and returns a score
+    """
+    metric = _create_metric_by_name(name)
+    return metric._func

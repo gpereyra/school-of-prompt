@@ -38,10 +38,10 @@ def test_basic_import():
         from school_of_prompt import CustomDataSource, CustomMetric, optimize
 
         print("✅ Basic import successful")
-        return True
+        assert True  # Test passed
     except ImportError as e:
         print(f"❌ Import failed: {e}")
-        return False
+        assert False, f"Import failed: {e}"
 
 
 def test_basic_functionality():
@@ -62,10 +62,10 @@ def test_basic_functionality():
 
         # This would normally require API key, but we're just testing the interface
         print("✅ Basic functionality interface works")
-        return True
+        assert True  # Test passed
     except Exception as e:
         print(f"❌ Basic functionality test failed: {e}")
-        return False
+        assert False, f"Basic functionality test failed: {e}"
 
 
 def test_examples():
@@ -75,7 +75,7 @@ def test_examples():
     examples_dir = Path("examples/simple_examples")
     if not examples_dir.exists():
         print(f"❌ Examples directory not found: {examples_dir}")
-        return False
+        assert False, "Test failed"
 
     example_files = [
         "band_sentiment_analysis.py",
@@ -119,7 +119,10 @@ def test_examples():
             print(f"❌ {example_file}: Error: {e}")
             all_passed = False
 
-    return all_passed
+    if all_passed:
+        assert True  # Test passed
+    else:
+        assert False, "Test failed"
 
 
 def test_dependencies():
@@ -147,7 +150,10 @@ def test_dependencies():
         except ImportError:
             print(f"⚠️ Optional package missing: {package} (OK for basic testing)")
 
-    return all_passed
+    if all_passed:
+        assert True  # Test passed
+    else:
+        assert False, "Test failed"
 
 
 def test_documentation_examples():
@@ -158,7 +164,7 @@ def test_documentation_examples():
     readme_path = Path("README.md")
     if not readme_path.exists():
         print("❌ README.md not found")
-        return False
+        assert False, "Test failed"
 
     try:
         with open(readme_path, "r") as f:
@@ -180,11 +186,14 @@ def test_documentation_examples():
             else:
                 print(f"✅ README contains: {example}")
 
-        return all_found
+        if all_found:
+            assert True  # Test passed
+        else:
+            assert False, "Test failed"
 
     except Exception as e:
         print(f"❌ Error reading README: {e}")
-        return False
+        assert False, "Test failed"
 
 
 def test_package_structure():
@@ -208,7 +217,10 @@ def test_package_structure():
         else:
             print(f"✅ Found required file: {file_path}")
 
-    return all_exist
+    if all_exist:
+        assert True  # Test passed
+    else:
+        assert False, "Test failed"
 
 
 def test_setup_py():
@@ -221,14 +233,14 @@ def test_setup_py():
 
         if success:
             print("✅ setup.py check passed")
-            return True
+            assert True  # Test passed
         else:
             print(f"❌ setup.py check failed: {stderr}")
-            return False
+            assert False, "Test failed"
 
     except Exception as e:
         print(f"❌ Error testing setup.py: {e}")
-        return False
+        assert False, "Test failed"
 
 
 def main():
@@ -277,10 +289,10 @@ def main():
 
     if passed == total:
         print("\n🎉 All tests passed! Framework is ready for publication.")
-        return True
+        assert True  # Test passed
     else:
         print(f"\n🚨 {total - passed} tests failed. Fix issues before publishing.")
-        return False
+        assert False, "Test failed"
 
 
 if __name__ == "__main__":

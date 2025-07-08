@@ -22,7 +22,9 @@ from .tasks.auto_task import auto_detect_task
 
 
 def optimize(
-    data: Union[str, pd.DataFrame, SimpleDataSource, Dict[str, str]],
+    data: Union[
+        str, pd.DataFrame, SimpleDataSource, Dict[str, str], List[Dict[str, Any]]
+    ],
     task: Union[str, SimpleTask],
     prompts: Union[str, List[str], Path],
     model: Union[str, Dict[str, Any], SimpleModel] = "gpt-3.5-turbo",

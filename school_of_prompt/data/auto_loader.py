@@ -13,7 +13,9 @@ from .registry import get_data_registry
 
 
 def auto_load_data(
-    data: Union[str, pd.DataFrame, SimpleDataSource, Dict[str, str]],
+    data: Union[
+        str, pd.DataFrame, SimpleDataSource, Dict[str, str], List[Dict[str, Any]]
+    ],
     sample_size: Optional[int] = None,
     random_seed: int = 42,
     sampling_strategy: str = "random",
@@ -24,7 +26,7 @@ def auto_load_data(
     Auto-load data from various sources with smart defaults.
 
     Args:
-        data: Path to file, DataFrame, custom data source, or dict of datasets
+        data: Path to file, DataFrame, custom data source, list of dicts, or dict of datasets
         sample_size: Limit to N samples (or dict with per-dataset limits)
         random_seed: Random seed for sampling
         sampling_strategy: "random", "stratified", or "balanced"
@@ -46,6 +48,9 @@ def auto_load_data(
         samples = data.load()
     elif isinstance(data, pd.DataFrame):
         samples = data.to_dict("records")
+    elif isinstance(data, list):
+        # Handle list of dictionaries directly
+        samples = data
     elif isinstance(data, (str, Path)):
         samples = _load_from_file(Path(data))
     else:
