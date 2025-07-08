@@ -1,73 +1,75 @@
-# School of Prompt Examples 🎸
+# School of Prompt Examples
 
-Rock your prompts with these School of Rock themed examples! Each is a complete, runnable example that demonstrates the `optimize()` API.
+Complete, runnable examples demonstrating the `optimize()` API. Each example shows different features and use cases.
 
-## 🚀 Quick Start
+## Quick Start
 
 1. **Set your API key:**
    ```bash
    export OPENAI_API_KEY="sk-your-key-here"
    ```
 
-2. **Rock any example:**
+2. **Run any example:**
    ```bash
    python band_sentiment_analysis.py
    python student_performance_rating.py
    python rock_content_safety.py
    ```
 
-## 🎵 Examples
+## Examples
 
-### 🎸 `band_sentiment_analysis.py`
-**Analyze fan reviews of the School of Rock band performances**
-- Demonstrates basic sentiment classification
-- School of Rock themed review data
-- Multiple prompt variants for fan sentiment analysis
-- Uses default metrics (accuracy, F1)
+### `band_sentiment_analysis.py`
+**Sentiment classification with default settings**
+- Basic sentiment classification task
+- Multiple prompt variants for comparison
+- Uses default metrics (accuracy, F1-score)
+- Demonstrates automatic task detection
 
-### 🥁 `student_performance_rating.py` 
-**Rate student performances like Dewey would** 
-- Regression task (rating performances 1-10)
-- Custom performance evaluation data
-- MAE (Mean Absolute Error) metric for rating accuracy
+### `student_performance_rating.py` 
+**Regression task with custom metrics**
+- Performance rating task (1-10 scale)
+- MAE (Mean Absolute Error) evaluation
 - Shows prediction vs actual comparison
+- Custom model configuration
 
-### 🛡️ `rock_content_safety.py`
-**Keep content school-appropriate for young rockers**
-- Content safety classification with custom metrics
-- Custom `RockSafetyPrecision` metric prioritizes catching inappropriate content
-- Model configuration (temperature=0.0 for consistency)
-- Safety-focused prompting for school environments
+### `rock_content_safety.py`
+**Content safety with custom metrics**
+- Content classification with safety focus
+- Custom metric implementation
+- Model configuration (temperature=0.0)
+- Multiple evaluation metrics
 
-## 🎯 Simple Usage
+## Usage Pattern
 
-Each example shows the power of the `optimize()` function:
+Each example demonstrates the core API:
 
 ```python
+from school_of_prompt import optimize
+
 results = optimize(
-    data="band_reviews.csv",
+    data="data.csv",
     task="classify sentiment",
-    prompts=["How does this fan feel about our band?"],
+    prompts=["Template 1", "Template 2"],
     api_key="sk-..."
 )
 ```
 
-## 🔧 Extension Points
+## Extension Examples
 
-See `rock_content_safety.py` for examples of:
-- **Custom metrics**: `RockSafetyPrecision` for domain-specific evaluation
-- **Model configuration**: Temperature, max_tokens for consistent safety decisions
-- **Multiple metrics**: Accuracy + precision + custom safety metric
+See `rock_content_safety.py` for:
+- **Custom metrics**: Domain-specific evaluation
+- **Model configuration**: Temperature, max_tokens
+- **Multiple metrics**: Combining standard and custom metrics
 
-## 💡 Tips for Rockers
+## Configuration Options
 
-- Start with `band_sentiment_analysis.py` for the simplest example
-- Use `verbose=True` to see the optimization progress
-- Add `sample_size=100` to limit evaluation on large datasets
-- Set `output_dir="results"` to save detailed results for later analysis
+- Use `verbose=True` to see optimization progress
+- Add `sample_size=100` to limit evaluation size
+- Set `output_dir="results"` to save detailed results
+- Configure models with `model={"name": "gpt-4", "temperature": 0.1}`
 
-## 🎸 Rock On!
+## Requirements
 
-Each example demonstrates that **you don't need to be a prompt engineering expert** to get great results. The framework handles the complexity so you can focus on your specific use case!
-
-*"You're not hardcore unless you optimize hardcore!"* 🤘
+- OpenAI API key (set via environment variable)
+- School of Prompt package installed
+- Python 3.9+
