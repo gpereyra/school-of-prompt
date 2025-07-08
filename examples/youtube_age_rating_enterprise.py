@@ -12,7 +12,9 @@ This example demonstrates:
 """
 
 import os
+
 import pandas as pd
+
 from school_of_prompt import optimize
 from school_of_prompt.core.config import create_sample_config_file
 from school_of_prompt.data.registry import get_data_registry

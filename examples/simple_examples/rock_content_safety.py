@@ -4,8 +4,10 @@ Classify music content as appropriate for kids or not - keeping it school-safe!
 """
 
 import os
+
 import pandas as pd
-from school_of_prompt import optimize, CustomMetric
+
+from school_of_prompt import CustomMetric, optimize
 
 
 class RockSafetyPrecision(CustomMetric):

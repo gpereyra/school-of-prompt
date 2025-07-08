@@ -2,11 +2,12 @@
 Basic tests for School of Prompt core functionality.
 """
 
-import pytest
 import pandas as pd
+import pytest
+
 from school_of_prompt import optimize
-from school_of_prompt.data.registry import get_data_registry
 from school_of_prompt.core.config import FrameworkConfig
+from school_of_prompt.data.registry import get_data_registry
 
 
 class TestBasicFunctionality:
@@ -84,8 +85,8 @@ class TestDataRegistry:
 
     def test_csv_data_source(self):
         """Test CSV data source."""
-        import tempfile
         import os
+        import tempfile
 
         # Create temporary CSV file
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:

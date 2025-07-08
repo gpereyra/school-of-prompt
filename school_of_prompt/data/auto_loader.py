@@ -3,9 +3,10 @@ Auto data loading - smart defaults for common data formats.
 Enhanced with registry support and advanced sampling strategies.
 """
 
-import pandas as pd
-from typing import Union, List, Dict, Any, Optional
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
+
+import pandas as pd
 
 from ..core.simple_interfaces import SimpleDataSource
 from .registry import get_data_registry

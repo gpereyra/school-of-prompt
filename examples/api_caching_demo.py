@@ -8,8 +8,9 @@ to avoid repeated calls, rate limiting, and API costs.
 
 import os
 import time
-from school_of_prompt.data.registry import get_data_registry
+
 from school_of_prompt import optimize
+from school_of_prompt.data.registry import get_data_registry
 
 
 def demo_api_caching():

@@ -3,10 +3,11 @@ Auto metric selection with smart defaults.
 Enhanced with tolerance-based, domain-specific, and statistical metrics.
 """
 
-from typing import Union, List, Optional, Any, Dict
-from ..core.simple_interfaces import SimpleMetric, SimpleTask
 import math
 import statistics
+from typing import Any, Dict, List, Optional, Union
+
+from ..core.simple_interfaces import SimpleMetric, SimpleTask
 
 
 def auto_select_metrics(

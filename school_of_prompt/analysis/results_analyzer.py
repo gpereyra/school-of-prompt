@@ -3,10 +3,11 @@ Comprehensive results analysis with statistical significance testing.
 Enhanced analysis capabilities for prompt optimization results.
 """
 
-from typing import Dict, List, Any, Optional, Tuple
-import statistics
 import math
+import statistics
 from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple
+
 from ..core.simple_interfaces import SimpleMetric
 
 

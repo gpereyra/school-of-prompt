@@ -2,7 +2,8 @@
 Auto model creation with smart defaults.
 """
 
-from typing import Union, Dict, Any
+from typing import Any, Dict, Union
+
 from ..core.simple_interfaces import SimpleModel
 
 

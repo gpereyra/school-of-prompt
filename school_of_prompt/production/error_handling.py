@@ -3,15 +3,15 @@ Advanced error handling and recovery system for School of Prompt.
 Provides graceful degradation, retry mechanisms, and fallback strategies.
 """
 
-import time
+import json
 import logging
+import random
+import time
 import traceback
-from typing import Any, Callable, Dict, List, Optional, Type, Union
 from dataclasses import dataclass, field
 from enum import Enum
 from functools import wraps
-import json
-import random
+from typing import Any, Callable, Dict, List, Optional, Type, Union
 
 
 class ErrorSeverity(Enum):

@@ -4,7 +4,9 @@ Rate student performances from 1-10 just like Dewey would!
 """
 
 import os
+
 import pandas as pd
+
 from school_of_prompt import optimize
 
 

@@ -3,7 +3,8 @@ Auto task detection and creation.
 """
 
 import re
-from typing import Union, List, Dict, Any
+from typing import Any, Dict, List, Union
+
 from ..core.simple_interfaces import SimpleTask
 
 

@@ -4,20 +4,17 @@ School of Prompt framework.
 """
 
 import os
-import pandas as pd
-from typing import Union, List, Dict, Any, Optional
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
-from .core.simple_interfaces import (
-    SimpleMetric,
-    SimpleDataSource,
-    SimpleModel,
-    SimpleTask,
-)
+import pandas as pd
+
+from .core.simple_interfaces import (SimpleDataSource, SimpleMetric,
+                                     SimpleModel, SimpleTask)
 from .data.auto_loader import auto_load_data
+from .metrics.auto_metrics import auto_select_metrics
 from .models.auto_model import auto_create_model
 from .tasks.auto_task import auto_detect_task
-from .metrics.auto_metrics import auto_select_metrics
 
 
 def optimize(
