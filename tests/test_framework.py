@@ -173,7 +173,7 @@ def test_documentation_examples():
         # Check for key examples
         required_examples = [
             "from school_of_prompt import optimize",
-            'data="band_reviews.csv"',
+            'data="reviews.csv"',
             'task="classify sentiment"',
             'api_key="sk-..."',
         ]
