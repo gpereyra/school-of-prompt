@@ -169,6 +169,116 @@ results = optimize(
 )
 ```
 
+### Enriching Untagged Data with External Labels
+```python
+import pandas as pd
+import re
+from textblob import TextBlob
+from school_of_prompt import optimize
+
+# Step 1: Load raw untagged data (e.g., from database, API, files)
+raw_data = pd.DataFrame({
+    "review": [
+        "This product changed my life! Amazing quality and fast shipping!",
+        "Terrible experience, would not recommend. Broke immediately.",
+        "It's okay, nothing special but does the job adequately.",
+        "Absolutely love it! Best purchase ever. 5 stars!",
+        "Poor quality, broke after one week. Customer service unhelpful."
+    ],
+    "rating": [5, 1, 3, 5, 2]  # External rating system
+})
+
+# Step 2: Enrich with rule-based and external tagging systems
+def enrich_with_tags(df):
+    """Add multiple tag sources before prompt optimization"""
+    enriched = df.copy()
+    
+    # Rule-based sentiment (using TextBlob)
+    enriched["sentiment_rule"] = df["review"].apply(
+        lambda x: "positive" if TextBlob(x).sentiment.polarity > 0.1 
+        else "negative" if TextBlob(x).sentiment.polarity < -0.1 
+        else "neutral"
+    )
+    
+    # Rating-based labels (external system)
+    enriched["sentiment_rating"] = df["rating"].apply(
+        lambda x: "positive" if x >= 4 else "negative" if x <= 2 else "neutral"
+    )
+    
+    # Length-based features
+    enriched["text_length"] = df["review"].apply(len)
+    enriched["is_detailed"] = enriched["text_length"] > 50
+    
+    # Keyword-based features (business rules)
+    positive_words = ["love", "amazing", "best", "great", "excellent"]
+    negative_words = ["terrible", "broke", "poor", "bad", "awful"]
+    
+    enriched["has_positive_keywords"] = df["review"].apply(
+        lambda x: any(word in x.lower() for word in positive_words)
+    )
+    enriched["has_negative_keywords"] = df["review"].apply(
+        lambda x: any(word in x.lower() for word in negative_words)
+    )
+    
+    return enriched
+
+# Apply enrichment
+tagged_data = enrich_with_tags(raw_data)
+
+# Step 3: Create ground truth from multiple tag sources
+def create_ground_truth(row):
+    """Combine multiple tag sources into ground truth"""
+    # Priority: rating > keywords > rule-based
+    if row["rating"] >= 4:
+        return "positive"
+    elif row["rating"] <= 2:
+        return "negative"
+    elif row["has_positive_keywords"] and not row["has_negative_keywords"]:
+        return "positive"
+    elif row["has_negative_keywords"] and not row["has_positive_keywords"]:
+        return "negative"
+    else:
+        return row["sentiment_rule"]  # Fallback to TextBlob
+
+tagged_data["label"] = tagged_data.apply(create_ground_truth, axis=1)
+
+# Step 4: Now optimize prompts using enriched, tagged data
+results = optimize(
+    data=tagged_data[["review", "label"]],  # Only use text and final label
+    task="classify sentiment",
+    prompts=[
+        "Sentiment: {review}",
+        "Classify this review sentiment: {review}",
+        "Is this review positive, negative, or neutral: {review}",
+        "Rate the sentiment of: {review}"
+    ],
+    model="gpt-3.5-turbo",
+    metrics=["accuracy", "f1_score"]
+)
+
+print(f"Best prompt: {results['best_prompt']}")
+print(f"Accuracy: {results['best_score']:.2f}")
+
+# Step 5: Optional - Compare against individual tag sources
+for tag_source in ["sentiment_rule", "sentiment_rating"]:
+    baseline_data = tagged_data[["review", tag_source]].rename(columns={tag_source: "label"})
+    baseline_results = optimize(
+        data=baseline_data,
+        task="classify sentiment",
+        prompts=[results['best_prompt']],  # Use best prompt
+        model="gpt-3.5-turbo",
+        verbose=False
+    )
+    print(f"{tag_source} baseline accuracy: {baseline_results['best_score']:.2f}")
+```
+
+**This workflow demonstrates:**
+- **External data enrichment**: Using ratings, business rules, existing NLP tools
+- **Multi-source labeling**: Combining rule-based, rating-based, and keyword-based tags
+- **Ground truth synthesis**: Creating final labels from multiple tag sources
+- **Prompt optimization**: Using enriched data for better prompt development
+- **Baseline comparison**: Validating against individual tag sources
+
 ## API Reference
 
 ### `optimize()`
