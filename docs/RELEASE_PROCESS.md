@@ -95,6 +95,13 @@ twine upload dist/*
 
 ## Requirements
 
+### Repository Settings
+
+**Ensure GitHub Actions has write permissions:**
+1. Go to **Repository Settings → Actions → General**
+2. Under **Workflow permissions**, select **"Read and write permissions"**
+3. Check **"Allow GitHub Actions to create and approve pull requests"**
+
 ### Tools Needed
 
 ```bash
@@ -150,6 +157,13 @@ For critical fixes:
 ## Troubleshooting
 
 ### Common Issues
+
+**GitHub Actions permission denied:**
+```
+remote: Permission to repo.git denied to github-actions[bot]
+Error: Process completed with exit code 128
+```
+**Solution**: Update repository settings to give GitHub Actions write permissions (see Requirements section above).
 
 **Version conflicts on PyPI:**
 ```bash
