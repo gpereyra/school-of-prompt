@@ -8,8 +8,13 @@ __version__ = "0.3.0"
 __author__ = "School of Prompt Team"
 
 # Extension points for advanced users
-from .core.simple_interfaces import (CustomDataSource, CustomMetric,
-                                     CustomModel, CustomTask)
+from .core.simple_interfaces import (
+    CustomDataSource,
+    CustomMetric,
+    CustomModel,
+    CustomTask,
+)
+
 # Main API
 from .optimize import optimize
 

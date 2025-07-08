@@ -9,8 +9,12 @@ from typing import Any, Dict, List, Optional, Union
 
 import pandas as pd
 
-from .core.simple_interfaces import (SimpleDataSource, SimpleMetric,
-                                     SimpleModel, SimpleTask)
+from .core.simple_interfaces import (
+    SimpleDataSource,
+    SimpleMetric,
+    SimpleModel,
+    SimpleTask,
+)
 from .data.auto_loader import auto_load_data
 from .metrics.auto_metrics import auto_select_metrics
 from .models.auto_model import auto_create_model
