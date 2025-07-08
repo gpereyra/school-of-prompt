@@ -76,14 +76,14 @@ def test_basic_api_call():
     """Test a minimal API call to verify connectivity."""
     print("🧪 Testing basic API connectivity...")
 
-    # Check if API key is available
+    # Check if API key is available and valid
     import os
 
     api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        print("⚠️ OPENAI_API_KEY not set. Skipping live API test.")
+    if not api_key or api_key.startswith("test_key"):
+        print("⚠️ No valid OPENAI_API_KEY found. Skipping live API test.")
         pytest = __import__("pytest")
-        pytest.skip("OPENAI_API_KEY environment variable not set")
+        pytest.skip("Valid OPENAI_API_KEY environment variable not set")
 
     try:
         import pandas as pd
