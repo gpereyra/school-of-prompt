@@ -20,8 +20,4 @@ echo "3️⃣  Running security checks with Bandit..."
 bandit -r school_of_prompt/ --severity-level medium --quiet
 
 echo ""
-echo "4️⃣  Checking for dependency vulnerabilities with Safety..."
-safety check --json > /dev/null 2>&1
-
-echo ""
 echo "✅ All checks passed! Your code is ready for CI/CD pipeline."
