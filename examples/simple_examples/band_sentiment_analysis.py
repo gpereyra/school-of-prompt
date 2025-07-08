@@ -10,18 +10,43 @@ from school_of_prompt import optimize
 def main():
     # School of Rock band performance reviews
     band_reviews = [
-        {"review": "Dewey's guitar solo was absolutely mind-blowing! Best show ever!", "sentiment": "positive"},
-        {"review": "Katie's drumming was off-beat and the whole performance sucked.", "sentiment": "negative"},
-        {"review": "Zack's bass lines were solid, pretty good overall show.", "sentiment": "neutral"},
-        {"review": "Summer's keyboard skills blew me away! Incredible talent!", "sentiment": "positive"},
-        {"review": "The band seemed unprepared and it was a total disaster.", "sentiment": "negative"},
-        {"review": "Lawrence on keyboards was decent, nothing spectacular though.", "sentiment": "neutral"},
-        {"review": "This band rocks! They're going to be famous someday!", "sentiment": "positive"},
-        {"review": "Boring performance, I've seen middle schoolers play better.", "sentiment": "negative"},
+        {
+            "review": "Dewey's guitar solo was absolutely mind-blowing! Best show ever!",
+            "sentiment": "positive",
+        },
+        {
+            "review": "Katie's drumming was off-beat and the whole performance sucked.",
+            "sentiment": "negative",
+        },
+        {
+            "review": "Zack's bass lines were solid, pretty good overall show.",
+            "sentiment": "neutral",
+        },
+        {
+            "review": "Summer's keyboard skills blew me away! Incredible talent!",
+            "sentiment": "positive",
+        },
+        {
+            "review": "The band seemed unprepared and it was a total disaster.",
+            "sentiment": "negative",
+        },
+        {
+            "review": "Lawrence on keyboards was decent, nothing spectacular though.",
+            "sentiment": "neutral",
+        },
+        {
+            "review": "This band rocks! They're going to be famous someday!",
+            "sentiment": "positive",
+        },
+        {
+            "review": "Boring performance, I've seen middle schoolers play better.",
+            "sentiment": "negative",
+        },
     ]
 
     # Save sample data to CSV for demo
     import pandas as pd
+
     df = pd.DataFrame(band_reviews)
     df.to_csv("band_reviews.csv", index=False)
 
@@ -33,10 +58,10 @@ def main():
             "How does this fan feel about the School of Rock band? {review}",
             "Is this review positive, negative, or neutral? {review}",
             "What's the sentiment of this band review: {review}",
-            "Fan reaction analysis: {review}"
+            "Fan reaction analysis: {review}",
         ],
         api_key=os.getenv("OPENAI_API_KEY"),
-        verbose=True
+        verbose=True,
     )
 
     print("\\n" + "🎸" * 50)

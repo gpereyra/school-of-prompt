@@ -15,13 +15,12 @@ from .core.simple_interfaces import (
     CustomMetric,
     CustomDataSource,
     CustomModel,
-    CustomTask
+    CustomTask,
 )
 
 __all__ = [
     # Main API
     "optimize",
-
     # Extension interfaces
     "CustomMetric",
     "CustomDataSource",

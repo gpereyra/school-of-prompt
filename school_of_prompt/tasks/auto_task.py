@@ -8,8 +8,7 @@ from ..core.simple_interfaces import SimpleTask
 
 
 def auto_detect_task(
-    task: Union[str, SimpleTask],
-    dataset: List[Dict[str, Any]]
+    task: Union[str, SimpleTask], dataset: List[Dict[str, Any]]
 ) -> SimpleTask:
     """
     Auto-detect task type and create appropriate task handler.
@@ -30,23 +29,23 @@ def auto_detect_task(
 
         # Classification tasks
         if any(
-            word in task_lower for word in [
-                'classify',
-                'classification',
-                'category',
-                'label']):
+            word in task_lower
+            for word in ["classify", "classification", "category", "label"]
+        ):
             return _create_classification_task(task, dataset)
 
         # Sentiment analysis (special case of classification)
-        elif 'sentiment' in task_lower:
+        elif "sentiment" in task_lower:
             return _create_sentiment_task(dataset)
 
         # Rating/scoring tasks
-        elif any(word in task_lower for word in ['rate', 'rating', 'score', 'scale']):
+        elif any(word in task_lower for word in ["rate", "rating", "score", "scale"]):
             return _create_rating_task(task, dataset)
 
         # Generation tasks
-        elif any(word in task_lower for word in ['generate', 'create', 'write', 'summarize']):
+        elif any(
+            word in task_lower for word in ["generate", "create", "write", "summarize"]
+        ):
             return _create_generation_task(task, dataset)
 
         # Default to classification
@@ -57,7 +56,8 @@ def auto_detect_task(
 
 
 def _create_classification_task(
-        task_desc: str, dataset: List[Dict[str, Any]]) -> SimpleTask:
+    task_desc: str, dataset: List[Dict[str, Any]]
+) -> SimpleTask:
     """Create classification task with auto-detected classes."""
 
     # Try to detect classes from dataset
@@ -67,12 +67,13 @@ def _create_classification_task(
         # Simple template formatting - replace {field} with sample values
         formatted = template
         for key, value in sample.items():
-            if key != 'label' and key != 'target':  # Don't include ground truth
-                formatted = formatted.replace(f'{{{key}}}', str(value))
+            if key != "label" and key != "target":  # Don't include ground truth
+                formatted = formatted.replace(f"{{{key}}}", str(value))
 
         # Add task instruction if not present
-        if not any(word in template.lower()
-                   for word in ['classify', 'category', 'label']):
+        if not any(
+            word in template.lower() for word in ["classify", "category", "label"]
+        ):
             formatted += f"\\n\\nTask: {task_desc}"
 
         if classes:
@@ -91,11 +92,11 @@ def _create_classification_task(
                     return cls
 
         # Otherwise return first word/line
-        return response.split('\\n')[0].split()[0]
+        return response.split("\\n")[0].split()[0]
 
     def truth_func(sample: Dict[str, Any]) -> str:
         # Common label field names
-        for field in ['label', 'target', 'class', 'category', 'ground_truth']:
+        for field in ["label", "target", "class", "category", "ground_truth"]:
             if field in sample:
                 return str(sample[field])
 
@@ -111,10 +112,10 @@ def _create_sentiment_task(dataset: List[Dict[str, Any]]) -> SimpleTask:
     def format_func(template: str, sample: Dict[str, Any]) -> str:
         formatted = template
         for key, value in sample.items():
-            if key not in ['label', 'target', 'sentiment']:
-                formatted = formatted.replace(f'{{{key}}}', str(value))
+            if key not in ["label", "target", "sentiment"]:
+                formatted = formatted.replace(f"{{{key}}}", str(value))
 
-        if 'sentiment' not in template.lower():
+        if "sentiment" not in template.lower():
             formatted += "\\n\\nAnalyze the sentiment: positive, negative, or neutral"
 
         return formatted
@@ -122,18 +123,18 @@ def _create_sentiment_task(dataset: List[Dict[str, Any]]) -> SimpleTask:
     def extract_func(response: str) -> str:
         response = response.strip().lower()
 
-        if 'positive' in response:
-            return 'positive'
-        elif 'negative' in response:
-            return 'negative'
-        elif 'neutral' in response:
-            return 'neutral'
+        if "positive" in response:
+            return "positive"
+        elif "negative" in response:
+            return "negative"
+        elif "neutral" in response:
+            return "neutral"
         else:
             # Return first word
-            return response.split()[0] if response.split() else 'neutral'
+            return response.split()[0] if response.split() else "neutral"
 
     def truth_func(sample: Dict[str, Any]) -> str:
-        for field in ['sentiment', 'label', 'target']:
+        for field in ["sentiment", "label", "target"]:
             if field in sample:
                 return str(sample[field]).lower()
         return str(list(sample.values())[-1]).lower()
@@ -141,31 +142,29 @@ def _create_sentiment_task(dataset: List[Dict[str, Any]]) -> SimpleTask:
     return SimpleTask(format_func, extract_func, truth_func)
 
 
-def _create_rating_task(
-        task_desc: str, dataset: List[Dict[str, Any]]) -> SimpleTask:
+def _create_rating_task(task_desc: str, dataset: List[Dict[str, Any]]) -> SimpleTask:
     """Create rating/scoring task."""
 
     def format_func(template: str, sample: Dict[str, Any]) -> str:
         formatted = template
         for key, value in sample.items():
-            if key not in ['rating', 'score', 'target', 'label']:
-                formatted = formatted.replace(f'{{{key}}}', str(value))
+            if key not in ["rating", "score", "target", "label"]:
+                formatted = formatted.replace(f"{{{key}}}", str(value))
 
-        if not any(word in template.lower()
-                   for word in ['rate', 'score', 'scale']):
+        if not any(word in template.lower() for word in ["rate", "score", "scale"]):
             formatted += f"\\n\\nTask: {task_desc}"
 
         return formatted
 
     def extract_func(response: str) -> float:
         # Extract numeric rating from response
-        numbers = re.findall(r'\\d+\\.?\\d*', response)
+        numbers = re.findall(r"\\d+\\.?\\d*", response)
         if numbers:
             return float(numbers[0])
         return 0.0
 
     def truth_func(sample: Dict[str, Any]) -> float:
-        for field in ['rating', 'score', 'target', 'label']:
+        for field in ["rating", "score", "target", "label"]:
             if field in sample:
                 try:
                     return float(sample[field])
@@ -182,17 +181,19 @@ def _create_rating_task(
 
 
 def _create_generation_task(
-        task_desc: str, dataset: List[Dict[str, Any]]) -> SimpleTask:
+    task_desc: str, dataset: List[Dict[str, Any]]
+) -> SimpleTask:
     """Create text generation task."""
 
     def format_func(template: str, sample: Dict[str, Any]) -> str:
         formatted = template
         for key, value in sample.items():
-            if key not in ['output', 'target', 'expected']:
-                formatted = formatted.replace(f'{{{key}}}', str(value))
+            if key not in ["output", "target", "expected"]:
+                formatted = formatted.replace(f"{{{key}}}", str(value))
 
-        if not any(word in template.lower()
-                   for word in ['generate', 'create', 'write']):
+        if not any(
+            word in template.lower() for word in ["generate", "create", "write"]
+        ):
             formatted += f"\\n\\nTask: {task_desc}"
 
         return formatted
@@ -202,7 +203,7 @@ def _create_generation_task(
         return response.strip()
 
     def truth_func(sample: Dict[str, Any]) -> str:
-        for field in ['output', 'target', 'expected', 'reference']:
+        for field in ["output", "target", "expected", "reference"]:
             if field in sample:
                 return str(sample[field])
         return str(list(sample.values())[-1])
@@ -217,7 +218,7 @@ def _detect_classes_from_data(dataset: List[Dict[str, Any]]) -> List[str]:
         return []
 
     # Look for label/target fields
-    for field in ['label', 'target', 'class', 'category']:
+    for field in ["label", "target", "class", "category"]:
         if field in dataset[0]:
             # Get unique values
             values = set()

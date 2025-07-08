@@ -9,14 +9,14 @@ from .results_analyzer import (
     PromptComparison,
     ErrorAnalysis,
     PerformanceBreakdown,
-    StatisticalTest
+    StatisticalTest,
 )
 
 __all__ = [
     "ResultsAnalyzer",
-    "ComprehensiveResults", 
+    "ComprehensiveResults",
     "PromptComparison",
     "ErrorAnalysis",
     "PerformanceBreakdown",
-    "StatisticalTest"
+    "StatisticalTest",
 ]

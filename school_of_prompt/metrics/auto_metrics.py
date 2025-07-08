@@ -10,8 +10,7 @@ import statistics
 
 
 def auto_select_metrics(
-    metrics: Optional[Union[str, List[str], List[SimpleMetric]]],
-    task: SimpleTask
+    metrics: Optional[Union[str, List[str], List[SimpleMetric]]], task: SimpleTask
 ) -> List[SimpleMetric]:
     """
     Auto-select appropriate metrics based on task type.
@@ -50,10 +49,7 @@ def _auto_select_for_task(task: SimpleTask) -> List[SimpleMetric]:
     # This is a heuristic - in practice you might want to make this more robust
 
     # Default to accuracy for classification-like tasks
-    return [
-        _create_metric_by_name("accuracy"),
-        _create_metric_by_name("f1")
-    ]
+    return [_create_metric_by_name("accuracy"), _create_metric_by_name("f1")]
 
 
 def _create_metric_by_name(name: str) -> SimpleMetric:
@@ -76,7 +72,7 @@ def _create_metric_by_name(name: str) -> SimpleMetric:
         return SimpleMetric("mse", _mse)
     elif name_lower in ["rmse", "root_mean_squared_error"]:
         return SimpleMetric("rmse", _rmse)
-    
+
     # Tolerance-based metrics
     elif name_lower == "within_1":
         return SimpleMetric("within_1", lambda p, a: _within_tolerance(p, a, 1))
@@ -86,7 +82,7 @@ def _create_metric_by_name(name: str) -> SimpleMetric:
         return SimpleMetric("within_3", lambda p, a: _within_tolerance(p, a, 3))
     elif name_lower == "within_5":
         return SimpleMetric("within_5", lambda p, a: _within_tolerance(p, a, 5))
-    
+
     # Domain-specific metrics
     elif name_lower == "valid_rate":
         return SimpleMetric("valid_rate", _valid_rate)
@@ -94,7 +90,7 @@ def _create_metric_by_name(name: str) -> SimpleMetric:
         return SimpleMetric("token_efficiency", _token_efficiency)
     elif name_lower == "response_quality":
         return SimpleMetric("response_quality", _response_quality)
-    
+
     # Statistical metrics
     elif name_lower == "r2_score":
         return SimpleMetric("r2_score", _r2_score)
@@ -104,7 +100,7 @@ def _create_metric_by_name(name: str) -> SimpleMetric:
         return SimpleMetric("error_std", _error_std)
     elif name_lower == "median_error":
         return SimpleMetric("median_error", _median_error)
-    
+
     else:
         raise ValueError(f"Unknown metric: {name}")
 
@@ -118,8 +114,9 @@ def _accuracy(predictions: List[Any], actuals: List[Any]) -> float:
     if not predictions:
         return 0.0
 
-    correct = sum(1 for p, a in zip(predictions, actuals)
-                  if str(p).lower() == str(a).lower())
+    correct = sum(
+        1 for p, a in zip(predictions, actuals) if str(p).lower() == str(a).lower()
+    )
     return correct / len(predictions)
 
 
@@ -153,30 +150,17 @@ def _f1_score(predictions: List[Any], actuals: List[Any]) -> float:
 
 
 def _binary_f1(
-        predictions: List[str],
-        actuals: List[str],
-        positive_classes: List[str]) -> float:
+    predictions: List[str], actuals: List[str], positive_classes: List[str]
+) -> float:
     """Calculate binary F1 score."""
 
     # Convert to binary (positive class vs rest)
     pred_binary = [1 if p in positive_classes else 0 for p in predictions]
     actual_binary = [1 if a in positive_classes else 0 for a in actuals]
 
-    tp = sum(
-        1 for p,
-        a in zip(
-            pred_binary,
-            actual_binary) if p == 1 and a == 1)
-    fp = sum(
-        1 for p,
-        a in zip(
-            pred_binary,
-            actual_binary) if p == 1 and a == 0)
-    fn = sum(
-        1 for p,
-        a in zip(
-            pred_binary,
-            actual_binary) if p == 0 and a == 1)
+    tp = sum(1 for p, a in zip(pred_binary, actual_binary) if p == 1 and a == 1)
+    fp = sum(1 for p, a in zip(pred_binary, actual_binary) if p == 1 and a == 0)
+    fn = sum(1 for p, a in zip(pred_binary, actual_binary) if p == 0 and a == 1)
 
     if tp == 0:
         return 0.0
@@ -277,25 +261,30 @@ def _mse(predictions: List[Any], actuals: List[Any]) -> float:
 def _rmse(predictions: List[Any], actuals: List[Any]) -> float:
     """Calculate Root Mean Squared Error."""
     import math
+
     return math.sqrt(_mse(predictions, actuals))
 
 
 # Enhanced metrics implementations
 
-def _within_tolerance(predictions: List[Any], actuals: List[Any], tolerance: float) -> float:
+
+def _within_tolerance(
+    predictions: List[Any], actuals: List[Any], tolerance: float
+) -> float:
     """Calculate percentage of predictions within tolerance of actual values."""
     if len(predictions) != len(actuals):
         raise ValueError("Predictions and actuals must have same length")
-    
+
     if not predictions:
         return 0.0
-    
+
     try:
         pred_nums = [float(p) for p in predictions]
         actual_nums = [float(a) for a in actuals]
-        
-        within_tolerance = sum(1 for p, a in zip(pred_nums, actual_nums) 
-                              if abs(p - a) <= tolerance)
+
+        within_tolerance = sum(
+            1 for p, a in zip(pred_nums, actual_nums) if abs(p - a) <= tolerance
+        )
         return within_tolerance / len(predictions)
     except (ValueError, TypeError):
         raise ValueError("Tolerance metrics require numeric predictions and actuals")
@@ -305,14 +294,14 @@ def _valid_rate(predictions: List[Any], actuals: List[Any]) -> float:
     """Calculate rate of valid/parseable predictions."""
     if not predictions:
         return 0.0
-    
+
     valid_count = 0
     for pred in predictions:
         # Check if prediction is valid based on different criteria
         if pred is not None and str(pred).strip():
             # Basic validity: not None and not empty
             valid_count += 1
-    
+
     return valid_count / len(predictions)
 
 
@@ -320,19 +309,19 @@ def _token_efficiency(predictions: List[Any], actuals: List[Any]) -> float:
     """Calculate token efficiency (shorter responses get bonus for equal accuracy)."""
     if len(predictions) != len(actuals):
         raise ValueError("Predictions and actuals must have same length")
-    
+
     if not predictions:
         return 0.0
-    
+
     # Calculate base accuracy
     base_accuracy = _accuracy(predictions, actuals)
-    
+
     # Calculate average token length (approximate)
     avg_length = sum(len(str(p).split()) for p in predictions) / len(predictions)
-    
+
     # Efficiency bonus for shorter responses (normalized)
     efficiency_bonus = max(0, (50 - avg_length) / 50)  # 50 tokens as baseline
-    
+
     return base_accuracy * (1 + efficiency_bonus * 0.1)  # 10% max bonus
 
 
@@ -340,28 +329,28 @@ def _response_quality(predictions: List[Any], actuals: List[Any]) -> float:
     """Calculate response quality based on completeness and format."""
     if not predictions:
         return 0.0
-    
+
     quality_scores = []
     for pred in predictions:
         pred_str = str(pred).strip()
-        
+
         # Quality criteria
         score = 0.0
-        
+
         # Completeness (not empty)
         if pred_str:
             score += 0.5
-        
+
         # Reasonable length (not too short, not too long)
         if 1 <= len(pred_str.split()) <= 20:
             score += 0.3
-        
+
         # Contains expected format (basic check)
         if pred_str and not pred_str.startswith("Error"):
             score += 0.2
-        
+
         quality_scores.append(score)
-    
+
     return sum(quality_scores) / len(quality_scores)
 
 
@@ -369,24 +358,24 @@ def _r2_score(predictions: List[Any], actuals: List[Any]) -> float:
     """Calculate R-squared score."""
     if len(predictions) != len(actuals):
         raise ValueError("Predictions and actuals must have same length")
-    
+
     if not predictions:
         return 0.0
-    
+
     try:
         pred_nums = [float(p) for p in predictions]
         actual_nums = [float(a) for a in actuals]
-        
+
         # Calculate means
         actual_mean = sum(actual_nums) / len(actual_nums)
-        
+
         # Calculate sum of squares
         ss_res = sum((a - p) ** 2 for a, p in zip(actual_nums, pred_nums))
         ss_tot = sum((a - actual_mean) ** 2 for a in actual_nums)
-        
+
         if ss_tot == 0:
             return 1.0 if ss_res == 0 else 0.0
-        
+
         return 1 - (ss_res / ss_tot)
     except (ValueError, TypeError):
         raise ValueError("R2 score requires numeric predictions and actuals")
@@ -396,16 +385,16 @@ def _prediction_confidence(predictions: List[Any], actuals: List[Any]) -> float:
     """Calculate prediction confidence based on consistency."""
     if len(predictions) != len(actuals):
         raise ValueError("Predictions and actuals must have same length")
-    
+
     if not predictions:
         return 0.0
-    
+
     # Simple confidence measure: inverse of prediction variance
     try:
         pred_nums = [float(p) for p in predictions]
         if len(set(pred_nums)) == 1:
             return 1.0  # All predictions the same = high confidence
-        
+
         pred_std = statistics.stdev(pred_nums)
         # Normalize confidence (lower std = higher confidence)
         return max(0, 1 - (pred_std / (max(pred_nums) - min(pred_nums))))
@@ -420,14 +409,14 @@ def _error_std(predictions: List[Any], actuals: List[Any]) -> float:
     """Calculate standard deviation of errors."""
     if len(predictions) != len(actuals):
         raise ValueError("Predictions and actuals must have same length")
-    
+
     if not predictions:
         return 0.0
-    
+
     try:
         pred_nums = [float(p) for p in predictions]
         actual_nums = [float(a) for a in actuals]
-        
+
         errors = [abs(p - a) for p, a in zip(pred_nums, actual_nums)]
         return statistics.stdev(errors) if len(errors) > 1 else 0.0
     except (ValueError, TypeError):
@@ -438,14 +427,14 @@ def _median_error(predictions: List[Any], actuals: List[Any]) -> float:
     """Calculate median absolute error."""
     if len(predictions) != len(actuals):
         raise ValueError("Predictions and actuals must have same length")
-    
+
     if not predictions:
         return 0.0
-    
+
     try:
         pred_nums = [float(p) for p in predictions]
         actual_nums = [float(a) for a in actuals]
-        
+
         errors = [abs(p - a) for p, a in zip(pred_nums, actual_nums)]
         return statistics.median(errors)
     except (ValueError, TypeError):
@@ -453,15 +442,17 @@ def _median_error(predictions: List[Any], actuals: List[Any]) -> float:
 
 
 # Enhanced metric selection with task-specific recommendations
-def get_recommended_metrics(task_type: str, target_range: Optional[tuple] = None) -> List[str]:
+def get_recommended_metrics(
+    task_type: str, target_range: Optional[tuple] = None
+) -> List[str]:
     """Get recommended metrics based on task type and target range."""
-    
+
     if task_type.lower() in ["classification", "sentiment", "categorization"]:
         return ["accuracy", "f1_score", "precision", "recall", "valid_rate"]
-    
+
     elif task_type.lower() in ["regression", "rating", "scoring"]:
         base_metrics = ["mae", "rmse", "r2_score", "median_error"]
-        
+
         # Add tolerance metrics based on target range
         if target_range:
             range_size = target_range[1] - target_range[0]
@@ -471,12 +462,12 @@ def get_recommended_metrics(task_type: str, target_range: Optional[tuple] = None
                 base_metrics.extend(["within_2", "within_3"])
             else:  # Large range
                 base_metrics.extend(["within_5"])
-        
+
         return base_metrics
-    
+
     elif task_type.lower() in ["generation", "summarization", "text_gen"]:
         return ["response_quality", "token_efficiency", "valid_rate"]
-    
+
     else:
         # Default comprehensive set
         return ["accuracy", "mae", "valid_rate", "response_quality"]

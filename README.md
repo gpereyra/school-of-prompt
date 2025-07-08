@@ -140,6 +140,7 @@ batch_processing:
 
 ### 🚀 **Production-Ready Features**
 - **Intelligent caching**: 24h expiry, size management, LRU eviction
+- **API data caching**: Automatic caching for YouTube, Reddit, and custom API sources
 - **Batch processing**: Parallel evaluation with progress tracking
 - **Error handling**: Retry logic, circuit breakers, graceful degradation
 - **Multi-dataset workflows**: Training/validation/test dataset support
@@ -160,10 +161,44 @@ The framework automatically handles common scenarios:
 - **JSONL files**: `data="performances.jsonl"`
 - **DataFrames**: `data=my_dataframe`
 - **Multi-datasets**: `data={"train": "train.csv", "test": "test.csv"}`
+- **API sources with caching**: YouTube, Reddit, and custom APIs with intelligent caching
 - **Custom sources**: `data=MyDataSource()`
 - **Enrichment pipeline**: Automatic text analysis, readability, sentiment features
 - **Preprocessing**: Text cleaning, label normalization, deduplication
 - **Smart sampling**: Random, stratified, and balanced sampling strategies
+
+### 🌐 **API Data Sources with Intelligent Caching**
+```python
+from school_of_prompt.data.registry import get_data_registry
+
+registry = get_data_registry()
+
+# YouTube data with 6-hour caching
+youtube_data = registry.get_source(
+    "youtube",
+    api_key="your_key",
+    query="educational content",
+    max_results=100,
+    cache_enabled=True,
+    cache_expiry="6h"
+)
+
+# Reddit data with 2-hour caching  
+reddit_data = registry.get_source(
+    "reddit",
+    subreddit="MachineLearning", 
+    limit=50,
+    cache_enabled=True,
+    cache_expiry="2h"
+)
+
+# Use in optimization - automatically cached!
+results = optimize(
+    data=youtube_data,  # First run: API call, subsequent: cached
+    task="rate content appropriateness",
+    prompts=["Rate this: {title}", "Age rating: {title}"]
+)
+```
 
 ### 🎯 **Auto Task Detection**
 - **"classify sentiment"** → Sentiment classification

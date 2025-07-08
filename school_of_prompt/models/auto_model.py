@@ -7,8 +7,7 @@ from ..core.simple_interfaces import SimpleModel
 
 
 def auto_create_model(
-    model: Union[str, Dict[str, Any], SimpleModel],
-    api_key: str
+    model: Union[str, Dict[str, Any], SimpleModel], api_key: str
 ) -> SimpleModel:
     """
     Auto-create model with smart defaults.
@@ -30,12 +29,12 @@ def auto_create_model(
 
     if isinstance(model, dict):
         # Model config dict
-        provider = model.get('provider', 'openai')
-        name = model.get('name', 'gpt-3.5-turbo')
+        provider = model.get("provider", "openai")
+        name = model.get("name", "gpt-3.5-turbo")
 
-        if provider == 'openai':
+        if provider == "openai":
             return _create_openai_model(name, api_key, **model)
-        elif provider == 'anthropic':
+        elif provider == "anthropic":
             return _create_anthropic_model(name, api_key, **model)
         else:
             raise ValueError(f"Unsupported model provider: {provider}")
@@ -49,14 +48,13 @@ def _create_openai_model(name: str, api_key: str, **kwargs) -> SimpleModel:
     try:
         import openai
     except ImportError:
-        raise ImportError(
-            "openai package required. Install with: pip install openai")
+        raise ImportError("openai package required. Install with: pip install openai")
 
     client = openai.OpenAI(api_key=api_key)
 
     # Extract model parameters
-    temperature = kwargs.get('temperature', 0.0)
-    max_tokens = kwargs.get('max_tokens', 150)
+    temperature = kwargs.get("temperature", 0.0)
+    max_tokens = kwargs.get("max_tokens", 150)
 
     def generate_func(prompt: str) -> str:
         try:
@@ -64,7 +62,7 @@ def _create_openai_model(name: str, api_key: str, **kwargs) -> SimpleModel:
                 model=name,
                 prompt=prompt,
                 temperature=temperature,
-                max_tokens=max_tokens
+                max_tokens=max_tokens,
             )
             return response.choices[0].text.strip()
         except Exception as e:
@@ -80,13 +78,14 @@ def _create_anthropic_model(name: str, api_key: str, **kwargs) -> SimpleModel:
         import anthropic
     except ImportError:
         raise ImportError(
-            "anthropic package required. Install with: pip install anthropic")
+            "anthropic package required. Install with: pip install anthropic"
+        )
 
     client = anthropic.Anthropic(api_key=api_key)
 
     # Extract model parameters
-    temperature = kwargs.get('temperature', 0.0)
-    max_tokens = kwargs.get('max_tokens', 150)
+    temperature = kwargs.get("temperature", 0.0)
+    max_tokens = kwargs.get("max_tokens", 150)
 
     def generate_func(prompt: str) -> str:
         try:
@@ -94,7 +93,7 @@ def _create_anthropic_model(name: str, api_key: str, **kwargs) -> SimpleModel:
                 model=name,
                 prompt=prompt,
                 temperature=temperature,
-                max_tokens_to_sample=max_tokens
+                max_tokens_to_sample=max_tokens,
             )
             return response.completion.strip()
         except Exception as e:

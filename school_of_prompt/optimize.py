@@ -8,7 +8,12 @@ import pandas as pd
 from typing import Union, List, Dict, Any, Optional
 from pathlib import Path
 
-from .core.simple_interfaces import SimpleMetric, SimpleDataSource, SimpleModel, SimpleTask
+from .core.simple_interfaces import (
+    SimpleMetric,
+    SimpleDataSource,
+    SimpleModel,
+    SimpleTask,
+)
 from .data.auto_loader import auto_load_data
 from .models.auto_model import auto_create_model
 from .tasks.auto_task import auto_detect_task
@@ -36,7 +41,7 @@ def optimize(
     cache_enabled: bool = True,
     batch_size: int = 100,
     parallel_evaluation: bool = False,
-    comprehensive_analysis: bool = False
+    comprehensive_analysis: bool = False,
 ) -> Dict[str, Any]:
     """
     Optimize prompts with minimal setup required.
@@ -52,7 +57,7 @@ def optimize(
         random_seed: Random seed for reproducibility
         output_dir: Directory to save results (optional)
         verbose: Print progress information
-        
+
         # Enhanced parameters
         config: Path to YAML config file or config dict (overrides other params)
         sampling_strategy: "random", "stratified", or "balanced"
@@ -91,12 +96,12 @@ def optimize(
     # Handle configuration file if provided
     if config:
         from .core.config import FrameworkConfig, load_config_from_file
-        
+
         if isinstance(config, str):
             config_obj = load_config_from_file(config)
         else:
             config_obj = FrameworkConfig(config_dict=config)
-        
+
         # Override parameters with config values
         data = data or config_obj.get_datasets()
         task = task or config_obj.task_type
@@ -109,7 +114,7 @@ def optimize(
         batch_size = config_obj.batch_size
         parallel_evaluation = config_obj.parallel_evaluation
         output_dir = output_dir or config_obj.output_dir
-        
+
         if verbose:
             print(f"📋 Loaded configuration: {config_obj.task_name}")
 
@@ -118,11 +123,13 @@ def optimize(
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
             raise ValueError(
-                "API key required. Set OPENAI_API_KEY env var or pass api_key parameter.")
+                "API key required. Set OPENAI_API_KEY env var or pass api_key parameter."
+            )
 
     # Configure caching
     if cache_enabled:
         from .production.cache import configure_global_cache
+
         configure_global_cache(enabled=True)
 
     # Auto-load data with enhanced features
@@ -134,14 +141,14 @@ def optimize(
         random_seed=random_seed,
         sampling_strategy=sampling_strategy,
         enrichers=enrichers,
-        preprocessors=preprocessors
+        preprocessors=preprocessors,
     )
 
     # Handle multi-dataset case
     if isinstance(dataset, dict):
         if verbose:
             print(f"📊 Multi-dataset mode: {list(dataset.keys())}")
-        
+
         return _run_multi_dataset_optimization(
             datasets=dataset,
             task=task,
@@ -155,7 +162,7 @@ def optimize(
             parallel_evaluation=parallel_evaluation,
             comprehensive_analysis=comprehensive_analysis,
             output_dir=output_dir,
-            verbose=verbose
+            verbose=verbose,
         )
 
     # Single dataset case - detect task
@@ -191,7 +198,7 @@ def optimize(
             k_fold=k_fold,
             batch_size=batch_size,
             parallel_evaluation=parallel_evaluation,
-            verbose=verbose
+            verbose=verbose,
         )
     else:
         # Standard optimization
@@ -205,7 +212,7 @@ def optimize(
             metrics=metrics_list,
             batch_size=batch_size,
             parallel_evaluation=parallel_evaluation,
-            verbose=verbose
+            verbose=verbose,
         )
 
     # Add comprehensive analysis if requested
@@ -231,7 +238,7 @@ def _load_prompts(prompts: Union[str, List[str], Path]) -> List[str]:
         path = Path(prompts)
         if path.exists():
             # Read from file (one prompt per line)
-            with open(path, 'r') as f:
+            with open(path, "r") as f:
                 return [line.strip() for line in f if line.strip()]
         else:
             # Single prompt string
@@ -239,8 +246,7 @@ def _load_prompts(prompts: Union[str, List[str], Path]) -> List[str]:
     elif isinstance(prompts, list):
         return prompts
     else:
-        raise ValueError(
-            "prompts must be string, list of strings, or path to file")
+        raise ValueError("prompts must be string, list of strings, or path to file")
 
 
 def _run_optimization(
@@ -251,7 +257,7 @@ def _run_optimization(
     metrics: List[SimpleMetric],
     batch_size: int = 100,
     parallel_evaluation: bool = False,
-    verbose: bool = True
+    verbose: bool = True,
 ) -> Dict[str, Any]:
     """Run the actual optimization process."""
 
@@ -260,20 +266,15 @@ def _run_optimization(
         "best_prompt": None,
         "best_score": None,
         "summary": {},
-        "details": []
+        "details": [],
     }
 
     for i, prompt in enumerate(prompts):
         if verbose:
-            print(
-                f"  Evaluating prompt {i + 1}/{len(prompts)}: {prompt[:50]}...")
+            print(f"  Evaluating prompt {i + 1}/{len(prompts)}: {prompt[:50]}...")
 
         prompt_results = _evaluate_prompt(
-            prompt=prompt,
-            dataset=dataset,
-            task=task,
-            model=model,
-            metrics=metrics
+            prompt=prompt, dataset=dataset, task=task, model=model, metrics=metrics
         )
 
         results["prompts"][f"prompt_{i + 1}"] = prompt_results
@@ -296,7 +297,7 @@ def _evaluate_prompt(
     dataset: List[Dict[str, Any]],
     task: SimpleTask,
     model: SimpleModel,
-    metrics: List[SimpleMetric]
+    metrics: List[SimpleMetric],
 ) -> Dict[str, Any]:
     """Evaluate a single prompt against the dataset."""
 
@@ -326,12 +327,13 @@ def _evaluate_prompt(
         "scores": scores,
         "predictions": predictions,
         "actuals": actuals,
-        "num_samples": len(dataset)
+        "num_samples": len(dataset),
     }
 
 
 def _generate_summary(
-        details: List[Dict[str, Any]], metrics: List[SimpleMetric]) -> Dict[str, Any]:
+    details: List[Dict[str, Any]], metrics: List[SimpleMetric]
+) -> Dict[str, Any]:
     """Generate summary statistics across all prompts."""
     summary = {"metrics": {}}
 
@@ -341,14 +343,13 @@ def _generate_summary(
             "mean": sum(scores) / len(scores),
             "min": min(scores),
             "max": max(scores),
-            "range": max(scores) - min(scores)
+            "range": max(scores) - min(scores),
         }
 
     return summary
 
 
-def _save_results(results: Dict[str, Any],
-                  output_dir: str, verbose: bool) -> None:
+def _save_results(results: Dict[str, Any], output_dir: str, verbose: bool) -> None:
     """Save results to output directory."""
     import json
     from datetime import datetime
@@ -359,7 +360,7 @@ def _save_results(results: Dict[str, Any],
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     results_file = output_path / f"optimization_results_{timestamp}.json"
 
-    with open(results_file, 'w') as f:
+    with open(results_file, "w") as f:
         json.dump(results, f, indent=2, default=str)
 
     if verbose:
@@ -378,10 +379,10 @@ def _print_summary(results: Dict[str, Any]) -> None:
     print(f"\nEvaluated {len(results['prompts'])} prompt variants")
 
     # Show metric comparison
-    if results['details']:
+    if results["details"]:
         print("\nMetric Comparison:")
-        for metric_name in results['details'][0]['scores'].keys():
-            scores = [d['scores'][metric_name] for d in results['details']]
+        for metric_name in results["details"][0]["scores"].keys():
+            scores = [d["scores"][metric_name] for d in results["details"]]
             print(f"  {metric_name}: {min(scores):.3f} - {max(scores):.3f}")
 
 
@@ -394,22 +395,23 @@ def _run_cross_validation(
     k_fold: int = 5,
     batch_size: int = 100,
     parallel_evaluation: bool = False,
-    verbose: bool = True
+    verbose: bool = True,
 ) -> Dict[str, Any]:
     """Run cross-validation evaluation."""
-    
+
     # Split dataset into k folds
     import random
+
     shuffled_data = dataset.copy()
     random.shuffle(shuffled_data)
-    
+
     fold_size = len(dataset) // k_fold
     folds = []
     for i in range(k_fold):
         start_idx = i * fold_size
         end_idx = start_idx + fold_size if i < k_fold - 1 else len(dataset)
         folds.append(shuffled_data[start_idx:end_idx])
-    
+
     cv_results = {
         "prompts": {},
         "best_prompt": None,
@@ -420,20 +422,20 @@ def _run_cross_validation(
             "k_fold": k_fold,
             "fold_results": [],
             "mean_scores": {},
-            "std_scores": {}
-        }
+            "std_scores": {},
+        },
     }
-    
+
     # Run evaluation on each fold
     all_fold_scores = {prompt: [] for prompt in prompts}
-    
+
     for fold_idx in range(k_fold):
         if verbose:
             print(f"🔄 Cross-validation fold {fold_idx + 1}/{k_fold}")
-        
+
         # Use current fold as test, others as train (though we don't train here)
         test_fold = folds[fold_idx]
-        
+
         fold_results = _run_optimization(
             dataset=test_fold,
             task=task,
@@ -442,11 +444,11 @@ def _run_cross_validation(
             metrics=metrics,
             batch_size=batch_size,
             parallel_evaluation=parallel_evaluation,
-            verbose=False
+            verbose=False,
         )
-        
+
         cv_results["cross_validation"]["fold_results"].append(fold_results)
-        
+
         # Collect scores for each prompt
         for i, prompt in enumerate(prompts):
             prompt_key = f"prompt_{i + 1}"
@@ -454,46 +456,50 @@ def _run_cross_validation(
                 primary_metric = metrics[0].name
                 score = fold_results["prompts"][prompt_key]["scores"][primary_metric]
                 all_fold_scores[prompt].append(score)
-    
+
     # Calculate mean and std across folds
     import statistics
-    
+
     best_mean_score = 0
     best_prompt = None
-    
+
     for i, prompt in enumerate(prompts):
         prompt_key = f"prompt_{i + 1}"
         scores = all_fold_scores[prompt]
-        
+
         if scores:
             mean_score = statistics.mean(scores)
             std_score = statistics.stdev(scores) if len(scores) > 1 else 0
-            
+
             cv_results["prompts"][prompt_key] = {
                 "prompt": prompt,
                 "mean_score": mean_score,
                 "std_score": std_score,
-                "fold_scores": scores
+                "fold_scores": scores,
             }
-            
+
             if mean_score > best_mean_score:
                 best_mean_score = mean_score
                 best_prompt = prompt
-    
+
     cv_results["best_prompt"] = best_prompt
     cv_results["best_score"] = best_mean_score
-    
+
     # Calculate overall statistics
     for metric in metrics:
         metric_scores = []
         for fold_result in cv_results["cross_validation"]["fold_results"]:
             for prompt_result in fold_result["details"]:
                 metric_scores.append(prompt_result["scores"][metric.name])
-        
+
         if metric_scores:
-            cv_results["cross_validation"]["mean_scores"][metric.name] = statistics.mean(metric_scores)
-            cv_results["cross_validation"]["std_scores"][metric.name] = statistics.stdev(metric_scores) if len(metric_scores) > 1 else 0
-    
+            cv_results["cross_validation"]["mean_scores"][metric.name] = (
+                statistics.mean(metric_scores)
+            )
+            cv_results["cross_validation"]["std_scores"][metric.name] = (
+                statistics.stdev(metric_scores) if len(metric_scores) > 1 else 0
+            )
+
     return cv_results
 
 
@@ -510,22 +516,22 @@ def _run_multi_dataset_optimization(
     parallel_evaluation: bool = False,
     comprehensive_analysis: bool = False,
     output_dir: Optional[str] = None,
-    verbose: bool = True
+    verbose: bool = True,
 ) -> Dict[str, Any]:
     """Run optimization across multiple datasets."""
-    
+
     multi_results = {
         "datasets": {},
         "aggregate_results": {},
         "best_overall_prompt": None,
-        "best_overall_score": None
+        "best_overall_score": None,
     }
-    
+
     # Process each dataset
     for dataset_name, dataset in datasets.items():
         if verbose:
             print(f"\n📊 Processing dataset: {dataset_name}")
-        
+
         # Run optimization on this dataset
         dataset_results = optimize(
             data=dataset,
@@ -539,98 +545,106 @@ def _run_multi_dataset_optimization(
             batch_size=batch_size,
             parallel_evaluation=parallel_evaluation,
             comprehensive_analysis=comprehensive_analysis,
-            verbose=verbose
+            verbose=verbose,
         )
-        
+
         multi_results["datasets"][dataset_name] = dataset_results
-    
+
     # Aggregate results across datasets
     if multi_results["datasets"]:
         multi_results["aggregate_results"] = _aggregate_multi_dataset_results(
             multi_results["datasets"]
         )
-        
+
         # Find best overall prompt
         best_score = 0
         best_prompt = None
-        
+
         for dataset_name, results in multi_results["datasets"].items():
             if results["best_score"] and results["best_score"] > best_score:
                 best_score = results["best_score"]
                 best_prompt = results["best_prompt"]
-        
+
         multi_results["best_overall_prompt"] = best_prompt
         multi_results["best_overall_score"] = best_score
-    
+
     return multi_results
 
 
-def _aggregate_multi_dataset_results(dataset_results: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+def _aggregate_multi_dataset_results(
+    dataset_results: Dict[str, Dict[str, Any]],
+) -> Dict[str, Any]:
     """Aggregate results across multiple datasets."""
-    
+
     aggregated = {
         "mean_scores_by_prompt": {},
         "performance_by_dataset": {},
-        "consistency_scores": {}
+        "consistency_scores": {},
     }
-    
+
     # Get all prompts and metrics
     first_result = list(dataset_results.values())[0]
     all_prompts = list(first_result["prompts"].keys())
-    
+
     if first_result["details"]:
         all_metrics = list(first_result["details"][0]["scores"].keys())
     else:
         all_metrics = []
-    
+
     # Calculate mean scores across datasets for each prompt
     for prompt_key in all_prompts:
         aggregated["mean_scores_by_prompt"][prompt_key] = {}
-        
+
         for metric in all_metrics:
             scores = []
             for dataset_name, results in dataset_results.items():
                 if prompt_key in results["prompts"]:
                     score = results["prompts"][prompt_key]["scores"][metric]
                     scores.append(score)
-            
+
             if scores:
                 import statistics
+
                 aggregated["mean_scores_by_prompt"][prompt_key][metric] = {
                     "mean": statistics.mean(scores),
                     "std": statistics.stdev(scores) if len(scores) > 1 else 0,
-                    "scores": scores
+                    "scores": scores,
                 }
-    
+
     # Performance by dataset
     for dataset_name, results in dataset_results.items():
         aggregated["performance_by_dataset"][dataset_name] = {
             "best_score": results["best_score"],
-            "best_prompt": results["best_prompt"]
+            "best_prompt": results["best_prompt"],
         }
-    
+
     return aggregated
 
 
 def _add_comprehensive_analysis(results: Dict[str, Any]) -> Dict[str, Any]:
     """Add comprehensive statistical analysis to results."""
-    
+
     # Create detailed data for analysis
     detailed_data = []
     for prompt_result in results["details"]:
-        for i, (pred, actual) in enumerate(zip(prompt_result["predictions"], prompt_result["actuals"])):
-            detailed_data.append({
-                "prompt": prompt_result["prompt"],
-                "prediction": pred,
-                "actual": actual,
-                "sample_index": i
-            })
-    
+        for i, (pred, actual) in enumerate(
+            zip(prompt_result["predictions"], prompt_result["actuals"])
+        ):
+            detailed_data.append(
+                {
+                    "prompt": prompt_result["prompt"],
+                    "prediction": pred,
+                    "actual": actual,
+                    "sample_index": i,
+                }
+            )
+
     # Run comprehensive analysis
     from .analysis.results_analyzer import ResultsAnalyzer
+
     analyzer = ResultsAnalyzer()
     comprehensive_results = analyzer.analyze_results(results, detailed_data)
-    
+
     # Add to results
     results["comprehensive_analysis"] = {
         "statistical_significance": {
@@ -638,7 +652,7 @@ def _add_comprehensive_analysis(results: Dict[str, Any]) -> Dict[str, Any]:
                 "statistic": test.statistic,
                 "p_value": test.p_value,
                 "significant": test.significant,
-                "interpretation": test.interpretation
+                "interpretation": test.interpretation,
             }
             for test_name, test in comprehensive_results.statistical_significance.items()
         },
@@ -646,24 +660,38 @@ def _add_comprehensive_analysis(results: Dict[str, Any]) -> Dict[str, Any]:
             "total_errors": comprehensive_results.error_analysis.total_errors,
             "error_rate": comprehensive_results.error_analysis.error_rate,
             "common_errors": comprehensive_results.error_analysis.common_errors[:5],
-            "error_patterns": comprehensive_results.error_analysis.error_patterns
+            "error_patterns": comprehensive_results.error_analysis.error_patterns,
         },
         "performance_breakdown": {
             "overall_score": comprehensive_results.performance_breakdown.overall_score,
             "by_category": comprehensive_results.performance_breakdown.by_category,
             "by_difficulty": comprehensive_results.performance_breakdown.by_difficulty,
-            "confidence_intervals": comprehensive_results.performance_breakdown.confidence_intervals
+            "confidence_intervals": comprehensive_results.performance_breakdown.confidence_intervals,
         },
         "recommendations": comprehensive_results.recommendations,
         "prompt_comparisons": [
             {
-                "prompt1": comp.prompt1[:50] + "..." if len(comp.prompt1) > 50 else comp.prompt1,
-                "prompt2": comp.prompt2[:50] + "..." if len(comp.prompt2) > 50 else comp.prompt2,
+                "prompt1": (
+                    comp.prompt1[:50] + "..."
+                    if len(comp.prompt1) > 50
+                    else comp.prompt1
+                ),
+                "prompt2": (
+                    comp.prompt2[:50] + "..."
+                    if len(comp.prompt2) > 50
+                    else comp.prompt2
+                ),
                 "improvement_percentage": comp.improvement_percentage,
-                "significant": comp.statistical_test.significant if comp.statistical_test else False
+                "significant": (
+                    comp.statistical_test.significant
+                    if comp.statistical_test
+                    else False
+                ),
             }
-            for comp in comprehensive_results.prompt_comparisons[:5]  # Top 5 comparisons
-        ]
+            for comp in comprehensive_results.prompt_comparisons[
+                :5
+            ]  # Top 5 comparisons
+        ],
     }
-    
+
     return results

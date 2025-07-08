@@ -17,22 +17,16 @@ class RockSafetyPrecision(CustomMetric):
 
     def calculate(self, predictions, actuals):
         # Convert to binary: inappropriate=1, appropriate=0
-        pred_inappropriate = [1 if 'inappropriate' in str(
-            p).lower() else 0 for p in predictions]
-        actual_inappropriate = [1 if 'inappropriate' in str(
-            a).lower() else 0 for a in actuals]
+        pred_inappropriate = [
+            1 if "inappropriate" in str(p).lower() else 0 for p in predictions
+        ]
+        actual_inappropriate = [
+            1 if "inappropriate" in str(a).lower() else 0 for a in actuals
+        ]
 
         # Calculate precision for "inappropriate" class
-        tp = sum(
-            p and a for p,
-            a in zip(
-                pred_inappropriate,
-                actual_inappropriate))
-        fp = sum(
-            p and not a for p,
-            a in zip(
-                pred_inappropriate,
-                actual_inappropriate))
+        tp = sum(p and a for p, a in zip(pred_inappropriate, actual_inappropriate))
+        fp = sum(p and not a for p, a in zip(pred_inappropriate, actual_inappropriate))
 
         return tp / (tp + fp) if (tp + fp) > 0 else 0.0
 
@@ -40,13 +34,34 @@ class RockSafetyPrecision(CustomMetric):
 def main():
     # Music content that needs safety evaluation for the school
     music_content = [
-        {"lyrics": "We're gonna rock this school and show everyone how awesome music is!", "safety": "appropriate"},
-        {"lyrics": "Drinking whiskey and raising hell all night long, breaking all the rules", "safety": "inappropriate"},
-        {"lyrics": "Learning guitar chords and playing with my friends in the band", "safety": "appropriate"},
-        {"lyrics": "Violence and destruction, burning down the establishment with rage", "safety": "inappropriate"},
-        {"lyrics": "Music class is fun when we all play together as a team", "safety": "appropriate"},
-        {"lyrics": "Getting wasted at the bar, smoking cigarettes behind the school", "safety": "inappropriate"},
-        {"lyrics": "Practice makes perfect, let's work on this song for the talent show", "safety": "appropriate"},
+        {
+            "lyrics": "We're gonna rock this school and show everyone how awesome music is!",
+            "safety": "appropriate",
+        },
+        {
+            "lyrics": "Drinking whiskey and raising hell all night long, breaking all the rules",
+            "safety": "inappropriate",
+        },
+        {
+            "lyrics": "Learning guitar chords and playing with my friends in the band",
+            "safety": "appropriate",
+        },
+        {
+            "lyrics": "Violence and destruction, burning down the establishment with rage",
+            "safety": "inappropriate",
+        },
+        {
+            "lyrics": "Music class is fun when we all play together as a team",
+            "safety": "appropriate",
+        },
+        {
+            "lyrics": "Getting wasted at the bar, smoking cigarettes behind the school",
+            "safety": "inappropriate",
+        },
+        {
+            "lyrics": "Practice makes perfect, let's work on this song for the talent show",
+            "safety": "appropriate",
+        },
     ]
 
     df = pd.DataFrame(music_content)
@@ -59,20 +74,20 @@ def main():
             "Is this appropriate for a school music program? {lyrics}",
             "School-safe content check: {lyrics}",
             "Can kids hear this in music class? {lyrics}",
-            "Principal's content approval: {lyrics}"
+            "Principal's content approval: {lyrics}",
         ],
         model={
             "name": "gpt-4",
             "temperature": 0.0,  # More consistent for safety decisions
-            "max_tokens": 10
+            "max_tokens": 10,
         },
         metrics=[
             "accuracy",
             "precision",
-            RockSafetyPrecision()  # Our custom safety metric
+            RockSafetyPrecision(),  # Our custom safety metric
         ],
         api_key=os.getenv("OPENAI_API_KEY"),
-        verbose=True
+        verbose=True,
     )
 
     print("\\n" + "🛡️" * 50)
@@ -82,8 +97,8 @@ def main():
     print(f"Safety detection accuracy: {results['best_score']:.3f}")
 
     # Show all metrics for best prompt
-    best_prompt_key = list(results['prompts'].keys())[0]
-    scores = results['prompts'][best_prompt_key]['scores']
+    best_prompt_key = list(results["prompts"].keys())[0]
+    scores = results["prompts"][best_prompt_key]["scores"]
     print("\\n🎸 Safety Metrics:")
     for metric, score in scores.items():
         print(f"  {metric}: {score:.3f}")
