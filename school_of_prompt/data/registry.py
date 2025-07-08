@@ -62,7 +62,8 @@ class CachedAPIDataSource(CustomDataSource):
         # Create a stable hash from API parameters
         key_data = {"source_class": self.__class__.__name__, "params": self.api_params}
         key_str = json.dumps(key_data, sort_keys=True)
-        return hashlib.md5(key_str.encode()).hexdigest()
+        # Use SHA256 for cache key generation (not for security, just uniqueness)
+        return hashlib.sha256(key_str.encode()).hexdigest()[:16]  # Truncate for readability
 
     def _fetch_from_api(self) -> List[Dict[str, Any]]:
         """Fetch data from the actual API. Override in subclasses."""
@@ -542,7 +543,7 @@ def balance_dataset(data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         # Simple random sampling (in practice, might want stratified sampling)
         import random
 
-        balanced_data.extend(random.sample(group, min_size))
+        balanced_data.extend(random.sample(group, min_size))  # nosec B311 - data sampling
 
     return balanced_data
 

@@ -175,7 +175,7 @@ def _apply_sampling(
         return data
 
     if strategy == "random":
-        return random.sample(data, sample_size)
+        return random.sample(data, sample_size)  # nosec B311 - used for data sampling, not security  # nosec B311 - used for data sampling, not security
 
     elif strategy == "stratified":
         return _stratified_sample(data, sample_size)
@@ -202,7 +202,7 @@ def _stratified_sample(
         # Fallback to random sampling if no label field
         import random
 
-        return random.sample(data, sample_size)
+        return random.sample(data, sample_size)  # nosec B311 - used for data sampling, not security
 
     # Group by label
     label_groups = {}
@@ -225,7 +225,7 @@ def _stratified_sample(
         else:
             import random
 
-            sampled_data.extend(random.sample(group, group_sample_size))
+            sampled_data.extend(random.sample(group, group_sample_size))  # nosec B311 - data sampling
 
     # If we don't have enough samples, fill randomly
     if len(sampled_data) < sample_size:
@@ -236,13 +236,13 @@ def _stratified_sample(
             additional_samples = min(
                 len(remaining_data), sample_size - len(sampled_data)
             )
-            sampled_data.extend(random.sample(remaining_data, additional_samples))
+            sampled_data.extend(random.sample(remaining_data, additional_samples))  # nosec B311 - data sampling
 
     # If we have too many samples, trim randomly
     if len(sampled_data) > sample_size:
         import random
 
-        sampled_data = random.sample(sampled_data, sample_size)
+        sampled_data = random.sample(sampled_data, sample_size)  # nosec B311 - data sampling
 
     return sampled_data
 
@@ -262,7 +262,7 @@ def _balanced_sample(
         # Fallback to random sampling if no label field
         import random
 
-        return random.sample(data, sample_size)
+        return random.sample(data, sample_size)  # nosec B311 - used for data sampling, not security
 
     # Group by label
     label_groups = {}
@@ -283,7 +283,7 @@ def _balanced_sample(
         else:
             import random
 
-            sampled_data.extend(random.sample(group, samples_per_group))
+            sampled_data.extend(random.sample(group, samples_per_group))  # nosec B311 - data sampling
 
     # Fill remaining slots randomly if needed
     remaining_slots = sample_size - len(sampled_data)
@@ -293,7 +293,7 @@ def _balanced_sample(
             import random
 
             additional_samples = min(len(remaining_data), remaining_slots)
-            sampled_data.extend(random.sample(remaining_data, additional_samples))
+            sampled_data.extend(random.sample(remaining_data, additional_samples))  # nosec B311 - data sampling
 
     return sampled_data
 
