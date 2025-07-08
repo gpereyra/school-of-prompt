@@ -182,7 +182,7 @@ def _apply_sampling(
     if strategy == "random":
         return random.sample(
             data, sample_size
-        )  # nosec B311 - used for data sampling, not security  # nosec B311 - used for data sampling, not security
+        )  # nosec B311
 
     elif strategy == "stratified":
         return _stratified_sample(data, sample_size)
@@ -211,7 +211,7 @@ def _stratified_sample(
 
         return random.sample(
             data, sample_size
-        )  # nosec B311 - used for data sampling, not security
+        )  # nosec B311
 
     # Group by label
     label_groups = {}
@@ -235,8 +235,8 @@ def _stratified_sample(
             import random
 
             sampled_data.extend(
-                random.sample(group, group_sample_size)
-            )  # nosec B311 - data sampling
+                random.sample(group, group_sample_size)  # nosec B311
+            )
 
     # If we don't have enough samples, fill randomly
     if len(sampled_data) < sample_size:
@@ -249,7 +249,7 @@ def _stratified_sample(
             )
             sampled_data.extend(
                 random.sample(remaining_data, additional_samples)
-            )  # nosec B311 - data sampling
+            )  # nosec B311
 
     # If we have too many samples, trim randomly
     if len(sampled_data) > sample_size:
@@ -257,7 +257,7 @@ def _stratified_sample(
 
         sampled_data = random.sample(
             sampled_data, sample_size
-        )  # nosec B311 - data sampling
+        )  # nosec B311
 
     return sampled_data
 
@@ -279,7 +279,7 @@ def _balanced_sample(
 
         return random.sample(
             data, sample_size
-        )  # nosec B311 - used for data sampling, not security
+        )  # nosec B311
 
     # Group by label
     label_groups = {}
@@ -302,7 +302,7 @@ def _balanced_sample(
 
             sampled_data.extend(
                 random.sample(group, samples_per_group)
-            )  # nosec B311 - data sampling
+            )  # nosec B311
 
     # Fill remaining slots randomly if needed
     remaining_slots = sample_size - len(sampled_data)
@@ -314,7 +314,7 @@ def _balanced_sample(
             additional_samples = min(len(remaining_data), remaining_slots)
             sampled_data.extend(
                 random.sample(remaining_data, additional_samples)
-            )  # nosec B311 - data sampling
+            )  # nosec B311
 
     return sampled_data
 

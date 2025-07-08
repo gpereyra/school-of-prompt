@@ -547,7 +547,7 @@ def balance_dataset(data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
         balanced_data.extend(
             random.sample(group, min_size)
-        )  # nosec B311 - data sampling
+        )  # nosec B311
 
     return balanced_data
 

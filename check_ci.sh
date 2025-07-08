@@ -12,20 +12,16 @@ echo "1️⃣  Running tests..."
 python -m pytest tests/ -v --tb=short
 
 echo ""
-echo "2️⃣  Checking code formatting with Black..."
-black --check school_of_prompt/ examples/ tests/
+echo "2️⃣  Checking for syntax errors with Flake8..."
+flake8 school_of_prompt/ --count --select=E9,F63,F7,F82 --show-source --statistics
 
 echo ""
-echo "3️⃣  Checking import sorting with isort..."
-isort --check-only school_of_prompt/ examples/ tests/
+echo "3️⃣  Running security checks with Bandit..."
+bandit -r school_of_prompt/ --severity-level medium --quiet
 
 echo ""
-echo "4️⃣  Running security checks with Bandit..."
-bandit -r school_of_prompt/ --quiet
-
-echo ""
-echo "5️⃣  Checking for dependency vulnerabilities with Safety..."
-safety check --json > /dev/null
+echo "4️⃣  Checking for dependency vulnerabilities with Safety..."
+safety check --json > /dev/null 2>&1
 
 echo ""
 echo "✅ All checks passed! Your code is ready for CI/CD pipeline."

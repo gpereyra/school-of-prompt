@@ -123,10 +123,7 @@ class FrameworkConfig:
             with open(self.api_keys_path, "r") as f:
                 return json.load(f)
         except FileNotFoundError:
-            raise FileNotFoundError(
-                f"API keys file not found: {
-                    self.api_keys_path}"
-            )
+            raise FileNotFoundError(f"API keys file not found: {self.api_keys_path}")
 
     def get(self, key: str, default: Any = None) -> Any:
         """Get configuration value by key."""

@@ -278,7 +278,7 @@ class ErrorHandler:
             base_delay = config.base_delay * (config.backoff_multiplier**attempt)
             jitter = (
                 random.uniform(-config.jitter_range, config.jitter_range)
-                * base_delay  # nosec B311 - jitter for retry timing
+                * base_delay  # nosec B311
             )
             delay = base_delay + jitter
 
