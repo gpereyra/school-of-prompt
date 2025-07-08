@@ -22,6 +22,8 @@ jobs:
   create-release:
     name: 🚀 Create Release
     runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.new_version.outputs.new_version }}
     
     steps:
     - name: 📥 Checkout Code
@@ -43,7 +45,7 @@ jobs:
     - name: 📊 Get Current Version
       id: current_version
       run: |
-        CURRENT_VERSION=$(python -c "import school_of_prompt; print(school_of_prompt.__version__)")
+        CURRENT_VERSION=$(grep "__version__" school_of_prompt/__init__.py | cut -d'"' -f2)
         echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
         echo "Current version: $CURRENT_VERSION"
         
@@ -186,4 +188,4 @@ jobs:
       run: |
         echo "🎸 School of Prompt release workflow completed!"
         echo "🏷️ New tag: v${{ needs.create-release.outputs.new_version }}"
-        echo "📦 The CI/CD pipeline will now build and publish to PyPI automatically."
+        echo "📦 Ready for manual PyPI publishing. See docs/RELEASE_PROCESS.md for next steps."
